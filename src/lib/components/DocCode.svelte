@@ -2,133 +2,52 @@
 	interface Props {
 		filename?: string;
 		lang?: string;
-		code: string;
+		code?: string;
+		html?: string;
 		highlights?: number[];
 	}
 
-	let { filename, lang, code, highlights = [] }: Props = $props();
+	let { filename, lang, code, html, highlights = [] }: Props = $props();
 
 	let lines = $derived(
 		code
-			.trim()
-			.split('\n')
-			.map((l) => l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+			? code
+					.trim()
+					.split('\n')
+					.map((l) => l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+			: []
 	);
 </script>
 
-<div class="doc-code-wrap">
-	<div class="code-block">
+<div class="my-4 mb-6">
+	<div class="overflow-hidden rounded-xl border border-[var(--fk-glass-border)] bg-black/40">
 		{#if filename}
-			<div class="code-header">
-				<div class="code-dot dot-red"></div>
-				<div class="code-dot dot-yellow"></div>
-				<div class="code-dot dot-green"></div>
-				<span class="code-filename">{filename}</span>
+			<div class="flex items-center gap-1.5 border-b border-[var(--fk-glass-border)] bg-white/[0.02] px-4 py-3">
+				<span class="h-2.5 w-2.5 rounded-full bg-[#ff5f57] opacity-50"></span>
+				<span class="h-2.5 w-2.5 rounded-full bg-[#febc2e] opacity-50"></span>
+				<span class="h-2.5 w-2.5 rounded-full bg-[#28c840] opacity-50"></span>
+				<span class="ml-2 font-mono text-xs text-[var(--muted-foreground)]">{filename}</span>
 				{#if lang}
-					<span class="code-lang">{lang}</span>
+					<span class="ml-auto text-[0.65rem] uppercase tracking-wide text-[var(--muted-foreground)] opacity-50">
+						{lang}
+					</span>
 				{/if}
 			</div>
 		{/if}
 
-		<div class="code-body">
-			<pre><code>{#each lines as line, i}<span
-					class="code-line"
-					class:highlighted={highlights.includes(i + 1)}
-				><span class="line-number">{String(i + 1).padStart(2, ' ')}</span><span class="line-content">{@html line}</span></span>
+		<div class="overflow-x-auto">
+			{#if html}
+				<div class="shiki-body">
+					{@html html}
+				</div>
+			{:else if lines.length > 0}
+				<pre class="m-0 p-0"><code class="block font-mono text-[0.8rem] leading-[1.7]">{#each lines as line, i}<span
+							class="inline-flex w-full px-4 {highlights.includes(i + 1)
+								? 'border-l-2 border-[var(--fk-cyan)] bg-[rgba(104,215,239,0.06)] pl-3.5'
+								: ''}"
+						><span class="mr-[1.5ch] inline-block w-[2.5ch] shrink-0 select-none text-right text-[var(--muted-foreground)] opacity-30">{String(i + 1).padStart(2, ' ')}</span><span class="min-w-0 flex-1">{@html line}</span></span>
 {/each}</code></pre>
+			{/if}
 		</div>
 	</div>
 </div>
-
-<style>
-	.doc-code-wrap {
-		margin: 1rem 0 1.5rem;
-	}
-
-	.code-block {
-		border-radius: 12px;
-		border: 1px solid var(--fk-glass-border);
-		background: rgba(0, 0, 0, 0.4);
-		overflow: hidden;
-		font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-		font-size: 0.8rem;
-		line-height: 1.7;
-	}
-
-	.code-header {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		padding: 12px 16px;
-		border-bottom: 1px solid var(--fk-glass-border);
-		background: rgba(255, 255, 255, 0.02);
-	}
-
-	.code-dot {
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		opacity: 0.5;
-	}
-
-	.dot-red { background: #ff5f57; }
-	.dot-yellow { background: #febc2e; }
-	.dot-green { background: #28c840; }
-
-	.code-filename {
-		margin-left: 8px;
-		font-size: 0.75rem;
-		color: var(--muted-foreground);
-	}
-
-	.code-lang {
-		margin-left: auto;
-		font-size: 0.65rem;
-		text-transform: uppercase;
-		letter-spacing: 0.06em;
-		color: var(--muted-foreground);
-		opacity: 0.5;
-	}
-
-	.code-body {
-		padding: 16px 0;
-		overflow-x: auto;
-	}
-
-	.code-body pre {
-		margin: 0;
-		padding: 0;
-	}
-
-	.code-body code {
-		display: block;
-	}
-
-	.code-line {
-		display: inline-flex;
-		width: 100%;
-		padding: 0 16px;
-	}
-
-	.code-line.highlighted {
-		background: rgba(104, 215, 239, 0.06);
-		border-left: 2px solid var(--fk-cyan);
-		padding-left: 14px;
-	}
-
-	.line-number {
-		display: inline-block;
-		width: 2.5ch;
-		margin-right: 1.5ch;
-		color: var(--muted-foreground);
-		opacity: 0.3;
-		user-select: none;
-		text-align: right;
-		flex-shrink: 0;
-	}
-
-	.line-content {
-		flex: 1;
-		min-width: 0;
-	}
-</style>

@@ -1,3 +1,5 @@
+/* src/app.css */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -8,8 +10,8 @@
 	--radius: 0.625rem;
 
 	/* Core surfaces */
-	--background: oklch(0.07 0.005 50);          /* #0c0a09 */
-	--foreground: oklch(0.87 0.01 75);            /* #d6d3d1 */
+	--background: oklch(0.07 0.005 50);
+	--foreground: oklch(0.87 0.01 75);
 
 	--card: oklch(0.10 0.005 50);
 	--card-foreground: oklch(0.87 0.01 75);
@@ -18,7 +20,7 @@
 	--popover-foreground: oklch(0.87 0.01 75);
 
 	/* Brand cyan as primary */
-	--primary: oklch(0.82 0.1 200);               /* #68D7EF */
+	--primary: oklch(0.82 0.1 200);
 	--primary-foreground: oklch(0.07 0.005 50);
 
 	/* Subtle surface lift */
@@ -26,10 +28,10 @@
 	--secondary-foreground: oklch(0.87 0.01 75);
 
 	--muted: oklch(0.18 0.005 50);
-	--muted-foreground: oklch(0.55 0.01 60);      /* #8f8984 */
+	--muted-foreground: oklch(0.55 0.01 60);
 
 	/* Brand purple as accent */
-	--accent: oklch(0.55 0.17 290);               /* #7A60FD */
+	--accent: oklch(0.55 0.17 290);
 	--accent-foreground: oklch(0.95 0.005 75);
 
 	--destructive: oklch(0.577 0.245 27.325);
@@ -39,9 +41,9 @@
 	--ring: oklch(0.82 0.1 200);
 
 	/* Charts — brand palette */
-	--chart-1: oklch(0.82 0.1 200);               /* cyan */
-	--chart-2: oklch(0.55 0.17 290);              /* purple */
-	--chart-3: oklch(0.70 0.12 220);              /* blue */
+	--chart-1: oklch(0.82 0.1 200);
+	--chart-2: oklch(0.55 0.17 290);
+	--chart-3: oklch(0.70 0.12 220);
 	--chart-4: oklch(0.769 0.188 70.08);
 	--chart-5: oklch(0.645 0.246 16.439);
 
@@ -107,7 +109,6 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
-	/* Brand colors available as Tailwind utilities: bg-fk-cyan, text-fk-purple, etc. */
 	--color-fk-cyan: var(--fk-cyan);
 	--color-fk-blue: var(--fk-blue);
 	--color-fk-purple: var(--fk-purple);
@@ -131,7 +132,7 @@
 	}
 }
 
-/* ─── Utility classes ─── */
+/* ─── Custom utilities ─── */
 @utility fk-gradient-text {
 	background: linear-gradient(135deg, var(--fk-cyan), var(--fk-purple));
 	-webkit-background-clip: text;
@@ -143,4 +144,245 @@
 	background: var(--fk-glass-bg);
 	border: 1px solid var(--fk-glass-border);
 	backdrop-filter: blur(12px);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   Syntax tokens — innerHTML spans from code components
+   Extracted from: CodeBlock, SplitCode, FeatureCard, DecoratorFlow
+   ═══════════════════════════════════════════════════ */
+.kw { color: #c792ea; }  /* keyword: async, def, return, await, if */
+.fn { color: #82aaff; }  /* function name */
+.st { color: #c3e88d; }  /* string literal */
+.cm { color: #546e7a; }  /* comment */
+.tp { color: #ffcb6b; }  /* type: int, str, list, Post */
+.nr { color: #f78c6c; }  /* number literal */
+.op { color: #89ddff; }  /* operator: ->, =>, ... */
+.dc { color: #68d7ef; }  /* decorator: @query, @form */
+.pr { color: #f07178; }  /* parameter name */
+.im { color: #89ddff; }  /* import keyword */
+.tg { color: #f07178; }  /* HTML/Svelte tag */
+.at { color: #c792ea; }  /* HTML attribute */
+
+
+/* ═══════════════════════════════════════════════════
+   Terminal output tokens — innerHTML spans
+   Extracted from: AnimatedTerminal
+   ═══════════════════════════════════════════════════ */
+.t-green  { color: #28c840; }
+.t-cyan   { color: var(--fk-cyan); }
+.t-dim    { color: #546e7a; }
+.t-yellow { color: #febc2e; }
+.t-purple { color: var(--fk-purple); }
+
+
+/* ═══════════════════════════════════════════════════
+   Shared keyframes & animation classes
+   Extracted from: SplitCode, AnimatedTerminal
+   ═══════════════════════════════════════════════════ */
+@keyframes cursor-blink {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0; }
+}
+
+@keyframes output-in {
+	to { opacity: 1; }
+}
+
+.animate-cursor-blink {
+	animation: cursor-blink 1s step-end infinite;
+}
+
+.animate-output-in {
+	animation: output-in 0.3s ease forwards;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   Shiki code rendering
+   Extracted from: DocCode
+   ═══════════════════════════════════════════════════ */
+.shiki-body pre {
+	margin: 0;
+	padding: 1rem;
+	background: transparent !important;
+	font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+	font-size: 0.8rem;
+	line-height: 1.7;
+}
+
+.shiki-body code {
+	display: block;
+	background: none !important;
+	border: none !important;
+	padding: 0 !important;
+	font-size: inherit;
+}
+
+.shiki-body .line {
+	display: inline-block;
+	width: 100%;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   Docs prose — typography for doc pages
+   Extracted from: docs/+layout.svelte
+   Apply via class="docs-prose" on the article element
+   ═══════════════════════════════════════════════════ */
+.docs-prose h1 {
+	font-size: 2rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	margin: 0 0 0.5rem;
+	background: linear-gradient(135deg, var(--fk-cyan), var(--fk-purple));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.docs-prose h2 {
+	font-size: 1.375rem;
+	font-weight: 600;
+	color: var(--foreground);
+	margin: 2.5rem 0 1rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid var(--border);
+}
+
+.docs-prose h3 {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--foreground);
+	margin: 2rem 0 0.75rem;
+}
+
+.docs-prose p {
+	font-size: 0.94rem;
+	line-height: 1.7;
+	color: var(--muted-foreground);
+	margin: 0 0 1rem;
+}
+
+.docs-prose a {
+	color: var(--fk-cyan);
+	text-decoration: none;
+	transition: color 0.15s;
+}
+
+.docs-prose a:hover {
+	color: var(--foreground);
+	text-decoration: underline;
+}
+
+.docs-prose code:not(pre code) {
+	font-family: 'JetBrains Mono', 'Fira Code', monospace;
+	font-size: 0.82em;
+	padding: 0.15em 0.4em;
+	border-radius: 5px;
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	color: var(--foreground);
+}
+
+.docs-prose ul {
+	margin: 0 0 1rem;
+	padding-left: 1.25rem;
+}
+
+.docs-prose li {
+	font-size: 0.94rem;
+	line-height: 1.7;
+	color: var(--muted-foreground);
+	margin-bottom: 0.25rem;
+}
+
+.docs-prose blockquote {
+	margin: 1rem 0;
+	padding: 0.75rem 1rem;
+	border-left: 3px solid var(--fk-cyan);
+	background: rgba(104, 215, 239, 0.04);
+	border-radius: 0 8px 8px 0;
+}
+
+.docs-prose blockquote p {
+	margin: 0;
+	font-size: 0.88rem;
+}
+
+.docs-prose table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1rem 0;
+	font-size: 0.88rem;
+}
+
+.docs-prose th {
+	text-align: left;
+	padding: 0.625rem 1rem;
+	font-weight: 600;
+	color: var(--foreground);
+	border-bottom: 1px solid var(--border);
+}
+
+.docs-prose td {
+	padding: 0.625rem 1rem;
+	color: var(--muted-foreground);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   Scrollbar styles
+   ═══════════════════════════════════════════════════ */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+/* Hide scrollbars on code blocks until hover */
+.code-block .code-body,
+.split-root pre,
+.shiki-body,
+.doc-code-wrap pre {
+	scrollbar-width: none;
+}
+
+.code-block .code-body::-webkit-scrollbar,
+.split-root pre::-webkit-scrollbar,
+.shiki-body::-webkit-scrollbar,
+.doc-code-wrap pre::-webkit-scrollbar {
+	height: 0;
+}
+
+.code-block .code-body:hover,
+.split-root pre:hover,
+.shiki-body:hover,
+.doc-code-wrap pre:hover {
+	scrollbar-width: thin;
+}
+
+.code-block .code-body:hover::-webkit-scrollbar,
+.split-root pre:hover::-webkit-scrollbar,
+.shiki-body:hover::-webkit-scrollbar,
+.doc-code-wrap pre:hover::-webkit-scrollbar {
+	height: 6px;
 }

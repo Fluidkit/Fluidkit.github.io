@@ -20,10 +20,10 @@
 	<!-- Logo row -->
 	<div class="relative flex items-center gap-0">
 		<!-- Svelte -->
-		<div class="logo-cell">
-			<div class="logo-wrap">
+		<div class="flex flex-col items-center gap-4">
+			<div class="logo-wrap relative flex h-[90px] w-[90px] items-center justify-center max-sm:h-[60px] max-sm:w-[60px]">
 				<div class="glow glow-svelte"></div>
-				<svg class="logo-svg float-1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+				<svg class="relative z-2 h-full w-full float-1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						class="svelte-path"
 						d="M27.573 4.229c-2.927-4.25-8.656-5.479-13.068-2.802l-7.464 4.745c-2.042 1.281-3.443 3.365-3.854 5.734-0.365 1.969-0.047 4.005 0.891 5.776-0.641 0.964-1.073 2.052-1.266 3.198-0.427 2.406 0.13 4.885 1.547 6.88 2.932 4.24 8.646 5.474 13.068 2.828l7.469-4.75c2.031-1.281 3.427-3.365 3.839-5.734 0.359-1.964 0.042-3.995-0.896-5.755 1.984-3.115 1.88-7.12-0.266-10.12zM13.76 28.172c-2.401 0.625-4.938-0.318-6.349-2.359-0.865-1.198-1.182-2.677-0.932-4.146l0.146-0.708 0.135-0.438 0.401 0.266c0.88 0.667 1.865 1.146 2.917 1.469l0.271 0.094-0.031 0.266c-0.026 0.37 0.083 0.786 0.297 1.104 0.438 0.63 1.198 0.932 1.932 0.734 0.161-0.052 0.318-0.104 0.453-0.188l7.438-4.745c0.375-0.24 0.615-0.599 0.708-1.026 0.083-0.443-0.026-0.896-0.266-1.255-0.443-0.615-1.198-0.891-1.932-0.708-0.161 0.057-0.333 0.12-0.469 0.203l-2.813 1.786c-2.661 1.583-6.099 0.839-7.865-1.708-0.859-1.198-1.198-2.693-0.938-4.146 0.26-1.438 1.12-2.698 2.365-3.469l7.422-4.745c0.469-0.292 0.974-0.505 1.521-0.667 2.401-0.625 4.932 0.318 6.349 2.349 1 1.406 1.281 3.203 0.76 4.849l-0.135 0.443-0.385-0.266c-0.891-0.651-1.88-1.146-2.932-1.469l-0.266-0.078 0.026-0.266c0.026-0.391-0.083-0.802-0.297-1.12-0.438-0.63-1.198-0.896-1.932-0.708-0.161 0.052-0.318 0.104-0.453 0.188l-7.453 4.786c-0.375 0.25-0.615 0.599-0.693 1.036-0.078 0.427 0.026 0.896 0.266 1.24 0.427 0.63 1.203 0.896 1.922 0.708 0.172-0.052 0.333-0.104 0.464-0.188l2.844-1.813c0.464-0.307 0.984-0.531 1.516-0.677 2.417-0.63 4.938 0.318 6.349 2.359 0.865 1.198 1.198 2.677 0.958 4.13-0.25 1.438-1.099 2.698-2.333 3.469l-7.438 4.734c-0.484 0.292-1.005 0.521-1.547 0.677z"
@@ -43,10 +43,10 @@
 		</div>
 
 		<!-- FluidKit -->
-		<div class="logo-cell center-cell">
-			<div class="logo-wrap wrap-fk">
+		<div class="flex flex-col items-center gap-4">
+			<div class="logo-wrap relative flex h-[110px] w-[110px] items-center justify-center max-sm:h-[76px] max-sm:w-[76px]">
 				<div class="glow glow-fk"></div>
-				<svg class="logo-svg logo-fk float-2" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+				<svg class="relative z-2 h-full w-full float-2" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
 					<g>
 						<rect class="fk-bg" width="250" height="250" rx="38" />
 						<rect id="lg" class="fk-shape" x="65" y="38" width="148" height="82" rx="12" />
@@ -68,10 +68,10 @@
 		</div>
 
 		<!-- Python -->
-		<div class="logo-cell">
-			<div class="logo-wrap">
+		<div class="flex flex-col items-center gap-4">
+			<div class="logo-wrap relative flex h-[90px] w-[90px] items-center justify-center max-sm:h-[60px] max-sm:w-[60px]">
 				<div class="glow glow-python"></div>
-				<svg class="logo-svg float-3" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+				<svg class="relative z-2 h-full w-full float-3" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
 					<path
 						class="py-blue"
 						d="M54.8,3.6c-26.1,0-24.8,11.3-24.8,11.3l0,11.5h25.4v3.6H24.3c0,0-17.5-2.1-17.5,25.4 c0,27.5,15.2,26.4,15.2,26.4h11.1v-12.6c0,0-0.2-14.7,14.6-14.7h15.9c0,0,14.3,0.3,14.3-13.8V21.6c0,0,1.9-18-23.1-18H54.8z M41.8,11.8c2.4,0,4.3,1.9,4.3,4.3c0,2.4-1.9,4.3-4.3,4.3c-2.4,0-4.3-1.9-4.3-4.3C37.5,13.7,39.4,11.8,41.8,11.8z"
@@ -89,8 +89,8 @@
 	<!-- Title block -->
 	<div class="title-block">
 		<h1 class="title">FluidKit</h1>
-		<p class="tagline">Web development for the Pythonist</p>
-		<p class="subtitle">
+		<p class="m-0 text-lg font-medium text-[var(--foreground)] max-sm:text-base">Web development for the Pythonist</p>
+		<p class="mt-1 max-w-[520px] text-base leading-relaxed text-[var(--muted-foreground)] max-sm:max-w-[340px] max-sm:text-sm">
 			Write backend functions in Python — FluidKit turns them into type&#8209;safe
 			SvelteKit remote&nbsp;functions. No glue code. No&nbsp;duplicated&nbsp;types.
 		</p>
@@ -98,10 +98,13 @@
 
 	<!-- CTA row -->
 	<div class="cta-row">
-		<button class="install-pill" onclick={copyInstall}>
-			<span class="install-prompt">$</span>
-			<code>pip install fluidkit</code>
-			<span class="install-copy">
+		<button
+			class="inline-flex cursor-pointer items-center gap-3 rounded-[10px] border border-[var(--fk-glass-border)] bg-[var(--fk-glass-bg)] py-2.5 pl-5 pr-4 text-[var(--foreground)] transition-all duration-300 hover:border-white/12 hover:bg-[var(--fk-glass-bg-hover)]"
+			onclick={copyInstall}
+		>
+			<span class="select-none font-mono text-[0.85rem] font-medium text-[var(--fk-cyan)]">$</span>
+			<code class="font-mono text-[0.85rem] text-[var(--foreground)]">pip install fluidkit</code>
+			<span class="flex items-center text-[var(--muted-foreground)] transition-colors duration-200 group-hover:text-[var(--foreground)]">
 				{#if copied}
 					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
 				{:else}
@@ -110,9 +113,9 @@
 			</span>
 		</button>
 
-		<div class="cta-buttons">
+		<div class="flex items-center gap-2">
 			<Button
-				href="{base}/docs"
+				href="/docs"
 				variant="outline"
 				class="fk-glass fk-glass-hover h-10 rounded-lg border-[var(--fk-glass-border)] px-5 text-sm"
 			>
@@ -164,35 +167,6 @@
 		50% { opacity: 1; }
 	}
 
-	/* ── Logo Cells ──────────────────────────────── */
-	.logo-cell {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.logo-wrap {
-		position: relative;
-		width: 90px;
-		height: 90px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.wrap-fk {
-		width: 110px;
-		height: 110px;
-	}
-
-	.logo-svg {
-		width: 100%;
-		height: 100%;
-		position: relative;
-		z-index: 2;
-	}
-
 	/* ── Floating ─────────────────────────────────── */
 	.float-1 { animation: float 5s ease-in-out infinite; }
 	.float-2 { animation: float 5s ease-in-out 0.8s infinite; }
@@ -234,6 +208,10 @@
 	.label-svelte { color: #ff3e00; }
 	.label-fk { color: #68D7EF; }
 	.label-python { color: #3776AB; }
+
+	@media (max-width: 640px) {
+		.label { font-size: 0.6rem; }
+	}
 
 	/* ── Svelte Logo ──────────────────────────────── */
 	.svelte-path {
@@ -401,6 +379,10 @@
 		100% { left: -6px; opacity: 0; }
 	}
 
+	@media (max-width: 640px) {
+		.beam { width: 40px; }
+	}
+
 	/* ── Title Block ──────────────────────────────── */
 	.title-block {
 		text-align: center;
@@ -425,19 +407,9 @@
 		line-height: 1.1;
 	}
 
-	.tagline {
-		margin: 0;
-		color: var(--foreground);
-		font-size: 1.2rem;
-		font-weight: 500;
-	}
-
-	.subtitle {
-		margin: 0.25rem 0 0;
-		color: var(--muted-foreground);
-		font-size: 1rem;
-		max-width: 520px;
-		line-height: 1.6;
+	@media (max-width: 640px) {
+		.title-block { margin-top: 2.5rem; }
+		.title { font-size: 2.25rem; }
 	}
 
 	/* ── CTA Row ──────────────────────────────────── */
@@ -449,55 +421,6 @@
 		margin-top: 2.5rem;
 		opacity: 0;
 		animation: fadeUp 1s 2.8s ease-out forwards;
-	}
-
-	.install-pill {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 0.6rem 1rem 0.6rem 1.2rem;
-		background: var(--fk-glass-bg);
-		border: 1px solid var(--fk-glass-border);
-		border-radius: 10px;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		color: var(--foreground);
-	}
-
-	.install-pill:hover {
-		background: var(--fk-glass-bg-hover);
-		border-color: rgba(255, 255, 255, 0.12);
-	}
-
-	.install-prompt {
-		color: var(--fk-cyan);
-		font-family: 'JetBrains Mono', 'Fira Code', monospace;
-		font-size: 0.85rem;
-		font-weight: 500;
-		user-select: none;
-	}
-
-	.install-pill code {
-		font-family: 'JetBrains Mono', 'Fira Code', monospace;
-		font-size: 0.85rem;
-		color: var(--foreground);
-	}
-
-	.install-copy {
-		display: flex;
-		align-items: center;
-		color: var(--muted-foreground);
-		transition: color 0.2s;
-	}
-
-	.install-pill:hover .install-copy {
-		color: var(--foreground);
-	}
-
-	.cta-buttons {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
 	}
 
 	/* ── Scroll Hint ──────────────────────────────── */
@@ -518,18 +441,6 @@
 	@keyframes fadeUp {
 		from { opacity: 0; transform: translateY(12px); }
 		to { opacity: 1; transform: translateY(0); }
-	}
-
-	/* ── Responsive ───────────────────────────────── */
-	@media (max-width: 640px) {
-		.logo-wrap { width: 60px; height: 60px; }
-		.wrap-fk { width: 76px; height: 76px; }
-		.beam { width: 40px; }
-		.title { font-size: 2.25rem; }
-		.tagline { font-size: 1rem; }
-		.subtitle { font-size: 0.9rem; max-width: 340px; }
-		.label { font-size: 0.6rem; }
-		.title-block { margin-top: 2.5rem; }
 	}
 
 	/* ── Reduced motion ──────────────────────────── */

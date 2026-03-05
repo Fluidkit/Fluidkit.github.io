@@ -21,7 +21,6 @@
 	let done = $state(false);
 	let el: HTMLDivElement;
 
-	// Derived from current state
 	let displayedCommand = $derived(
 		steps[currentStep]?.command.slice(0, charIndex) ?? ''
 	);
@@ -49,24 +48,17 @@
 			return;
 		}
 
-		// Typing phase
 		if (charIndex < step.command.length) {
 			const speed = 40 + Math.random() * 40;
-			const timeout = setTimeout(() => {
-				charIndex++;
-			}, speed);
+			const timeout = setTimeout(() => { charIndex++; }, speed);
 			return () => clearTimeout(timeout);
 		}
 
-		// Show output after typing completes
 		if (!showOutput) {
-			const timeout = setTimeout(() => {
-				showOutput = true;
-			}, 300);
+			const timeout = setTimeout(() => { showOutput = true; }, 300);
 			return () => clearTimeout(timeout);
 		}
 
-		// Move to next step
 		if (currentStep < steps.length - 1) {
 			const timeout = setTimeout(() => {
 				currentStep++;
@@ -90,162 +82,55 @@
 	});
 </script>
 
-<div bind:this={el} class="terminal {className}" class:visible>
-	<div class="terminal-header">
-		<div class="dots">
-			<span class="dot dot-red"></span>
-			<span class="dot dot-yellow"></span>
-			<span class="dot dot-green"></span>
-		</div>
-		<span class="terminal-title">{title}</span>
+<div
+	bind:this={el}
+	class="mx-auto max-w-[640px] overflow-hidden rounded-[14px] border border-[var(--fk-glass-border)] bg-black/50 font-mono text-[0.82rem] leading-[1.7] transition-all duration-[800ms] ease-out {visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'} {className}"
+>
+	<!-- Header -->
+	<div class="flex items-center gap-1.5 border-b border-[var(--fk-glass-border)] bg-white/[0.02] px-4 py-3">
+		<span class="h-2.5 w-2.5 rounded-full bg-[#ff5f57] opacity-50"></span>
+		<span class="h-2.5 w-2.5 rounded-full bg-[#febc2e] opacity-50"></span>
+		<span class="h-2.5 w-2.5 rounded-full bg-[#28c840] opacity-50"></span>
+		<span class="ml-2 text-[0.72rem] text-[var(--muted-foreground)]">{title}</span>
 	</div>
 
-	<div class="terminal-body">
+	<!-- Body -->
+	<div class="p-4">
 		{#each steps as step, i}
 			{#if i < currentStep}
-				<!-- Completed steps -->
-				<div class="term-line">
-					<span class="term-prompt">{step.prompt}</span>
-					<span class="term-cmd">{step.command}</span>
+				<div class="flex items-center whitespace-nowrap">
+					<span class="mr-[0.75ch] shrink-0 select-none text-[var(--fk-cyan)]">{step.prompt}</span>
+					<span class="text-[var(--foreground)]">{step.command}</span>
 				</div>
 				{#if step.output}
 					{#each step.output as line}
-						<div class="term-output">{@html line}</div>
+						<div class="pl-[2.5ch] text-[0.76rem] text-[var(--muted-foreground)]">{@html line}</div>
 					{/each}
 				{/if}
 			{:else if i === currentStep}
-				<!-- Active step -->
-				<div class="term-line">
-					<span class="term-prompt">{step.prompt}</span>
-					<span class="term-cmd">{displayedCommand}</span>
+				<div class="flex items-center whitespace-nowrap">
+					<span class="mr-[0.75ch] shrink-0 select-none text-[var(--fk-cyan)]">{step.prompt}</span>
+					<span class="text-[var(--foreground)]">{displayedCommand}</span>
 					{#if !done}
-						<span class="term-cursor">▎</span>
+						<span class="ml-px animate-cursor-blink text-[var(--fk-cyan)]">▎</span>
 					{/if}
 				</div>
 				{#if showOutput && step.output}
 					{#each step.output as line, j}
-						<div class="term-output fade-in" style="--delay: {j * 60}ms">{@html line}</div>
+						<div
+							class="animate-output-in pl-[2.5ch] text-[0.76rem] text-[var(--muted-foreground)] opacity-0"
+							style="animation-delay: {j * 60}ms"
+						>{@html line}</div>
 					{/each}
 				{/if}
 			{/if}
 		{/each}
 
 		{#if done}
-			<div class="term-line">
-				<span class="term-prompt">{steps[steps.length - 1]?.prompt ?? '$'}</span>
-				<span class="term-cursor">▎</span>
+			<div class="flex items-center whitespace-nowrap">
+				<span class="mr-[0.75ch] shrink-0 select-none text-[var(--fk-cyan)]">{steps[steps.length - 1]?.prompt ?? '$'}</span>
+				<span class="ml-px animate-cursor-blink text-[var(--fk-cyan)]">▎</span>
 			</div>
 		{/if}
 	</div>
 </div>
-
-<style>
-	.terminal {
-		border-radius: 14px;
-		border: 1px solid var(--fk-glass-border);
-		background: rgba(0, 0, 0, 0.5);
-		overflow: hidden;
-		font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-		font-size: 0.82rem;
-		line-height: 1.7;
-		max-width: 640px;
-		margin: 0 auto;
-		opacity: 0;
-		transform: translateY(20px);
-		transition: opacity 0.8s ease, transform 0.8s ease;
-	}
-
-	.terminal.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	/* ── Header ───────────────────────────────────── */
-	.terminal-header {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		padding: 12px 16px;
-		border-bottom: 1px solid var(--fk-glass-border);
-		background: rgba(255, 255, 255, 0.02);
-	}
-
-	.dots {
-		display: flex;
-		gap: 6px;
-	}
-
-	.dot {
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		opacity: 0.5;
-	}
-
-	.dot-red { background: #ff5f57; }
-	.dot-yellow { background: #febc2e; }
-	.dot-green { background: #28c840; }
-
-	.terminal-title {
-		margin-left: 8px;
-		font-size: 0.72rem;
-		color: var(--muted-foreground);
-	}
-
-	/* ── Body ─────────────────────────────────────── */
-	.terminal-body {
-		padding: 16px;
-	}
-
-	.term-line {
-		display: flex;
-		align-items: center;
-		gap: 0;
-		white-space: nowrap;
-	}
-
-	.term-prompt {
-		color: var(--fk-cyan);
-		margin-right: 0.75ch;
-		user-select: none;
-		flex-shrink: 0;
-	}
-
-	.term-cmd {
-		color: var(--foreground);
-	}
-
-	.term-cursor {
-		color: var(--fk-cyan);
-		animation: blink 1s step-end infinite;
-		margin-left: 1px;
-	}
-
-	@keyframes blink {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0; }
-	}
-
-	.term-output {
-		color: var(--muted-foreground);
-		padding-left: 2.5ch;
-		font-size: 0.76rem;
-	}
-
-	.fade-in {
-		opacity: 0;
-		animation: outputIn 0.3s ease forwards;
-		animation-delay: var(--delay);
-	}
-
-	@keyframes outputIn {
-		to { opacity: 1; }
-	}
-
-	/* ── Output token colors ──────────────────────── */
-	.terminal :global(.t-green) { color: #28c840; }
-	.terminal :global(.t-cyan) { color: var(--fk-cyan); }
-	.terminal :global(.t-dim) { color: #546e7a; }
-	.terminal :global(.t-yellow) { color: #febc2e; }
-	.terminal :global(.t-purple) { color: var(--fk-purple); }
-</style>

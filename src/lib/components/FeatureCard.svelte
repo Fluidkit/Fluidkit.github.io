@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { base } from '$app/paths';
 
 	interface Props {
 		title: string;
@@ -15,36 +14,36 @@
 </script>
 
 {#if href}
-	<a {href} class="card" style="--accent: {color}">
+	<a {href} class="card group" style="--accent: {color}">
 		{@render content()}
 	</a>
 {:else}
-	<div class="card" style="--accent: {color}">
+	<div class="card group" style="--accent: {color}">
 		{@render content()}
 	</div>
 {/if}
 
 {#snippet content()}
-	<div class="card-top">
+	<div class="flex-1">
 		{#if icon}
-			<div class="card-icon">
+			<div class="card-icon mb-4 flex h-9 w-9 items-center justify-center rounded-[10px]">
 				{@render icon()}
 			</div>
 		{/if}
-		<h3 class="card-title">{title}</h3>
-		<p class="card-desc">{description}</p>
+		<h3 class="m-0 mb-2 font-mono text-base font-semibold text-[var(--accent)]">{title}</h3>
+		<p class="m-0 text-sm leading-relaxed text-[var(--muted-foreground)]">{description}</p>
 	</div>
 
 	{#if code}
-		<div class="card-code">
+		<div class="mt-4 overflow-x-auto rounded-lg border border-white/[0.04] bg-black/30 px-4 py-3.5 font-mono text-[0.7rem] leading-[1.7]">
 			{#each code as line}
-				<div class="code-line">{@html line}</div>
+				<div class="whitespace-nowrap">{@html line}</div>
 			{/each}
 		</div>
 	{/if}
 
 	{#if href}
-		<div class="card-link">
+		<div class="card-link mt-5 flex items-center gap-1.5 text-[0.8rem] font-medium text-[var(--accent)] opacity-70 transition-opacity duration-200 group-hover:opacity-100">
 			<span>Learn more</span>
 			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
 				<path d="M5 12h14" />
@@ -55,6 +54,7 @@
 {/snippet}
 
 <style>
+	/* Card base + hover — uses color-mix() with var(--accent), can't be Tailwind */
 	.card {
 		display: flex;
 		flex-direction: column;
@@ -74,80 +74,9 @@
 		transform: translateY(-2px);
 	}
 
-	.card-top {
-		flex: 1;
-	}
-
 	.card-icon {
-		width: 36px;
-		height: 36px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 10px;
 		background: color-mix(in oklch, var(--accent) 10%, transparent);
 		border: 1px solid color-mix(in oklch, var(--accent) 15%, transparent);
 		color: var(--accent);
-		margin-bottom: 1rem;
 	}
-
-	.card-title {
-		font-family: 'JetBrains Mono', 'Fira Code', monospace;
-		font-size: 1rem;
-		font-weight: 600;
-		color: var(--accent);
-		margin: 0 0 0.5rem;
-	}
-
-	.card-desc {
-		font-size: 0.875rem;
-		line-height: 1.6;
-		color: var(--muted-foreground);
-		margin: 0;
-	}
-
-	/* ── Mini code preview ────────────────────────── */
-	.card-code {
-		margin-top: 1rem;
-		padding: 0.875rem 1rem;
-		border-radius: 8px;
-		background: rgba(0, 0, 0, 0.3);
-		border: 1px solid rgba(255, 255, 255, 0.04);
-		font-family: 'JetBrains Mono', 'Fira Code', monospace;
-		font-size: 0.7rem;
-		line-height: 1.7;
-		overflow-x: auto;
-	}
-
-	.code-line {
-		white-space: nowrap;
-	}
-
-	/* ── Link ─────────────────────────────────────── */
-	.card-link {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		margin-top: 1.25rem;
-		font-size: 0.8rem;
-		font-weight: 500;
-		color: var(--accent);
-		opacity: 0.7;
-		transition: opacity 0.2s;
-	}
-
-	.card:hover .card-link {
-		opacity: 1;
-	}
-
-	/* ── Syntax tokens ────────────────────────────── */
-	.card :global(.kw) { color: #c792ea; }
-	.card :global(.fn) { color: #82aaff; }
-	.card :global(.st) { color: #c3e88d; }
-	.card :global(.cm) { color: #546e7a; }
-	.card :global(.tp) { color: #ffcb6b; }
-	.card :global(.dc) { color: #68d7ef; }
-	.card :global(.pr) { color: #f07178; }
-	.card :global(.im) { color: #89ddff; }
-	.card :global(.op) { color: #89ddff; }
 </style>

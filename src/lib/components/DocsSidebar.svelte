@@ -12,7 +12,7 @@
 		items: NavItem[];
 	}
 
-    interface Props {
+	interface Props {
 		onnavigate?: () => void;
 	}
 
@@ -41,7 +41,7 @@
 		}
 	];
 
-    let { onnavigate }: Props = $props();
+	let { onnavigate }: Props = $props();
 
 	function isActive(href: string): boolean {
 		const current = page.url.pathname.replace(/\/$/, '');
@@ -50,26 +50,30 @@
 	}
 </script>
 
-<aside class="sidebar">
+<aside class="sticky top-20 w-[220px] shrink-0 overflow-y-auto pr-6" style="max-height: calc(100vh - 6rem)">
 	<nav>
 		{#each nav as group, gi}
 			{#if gi > 0}
-				<div class="sidebar-sep"></div>
+				<div class="my-3 h-px bg-[var(--border)]"></div>
 			{/if}
-			<div class="sidebar-group">
-				<span class="sidebar-label">{group.label}</span>
-				<ul>
+			<div class="flex flex-col gap-0.5">
+				<span class="mb-1.5 px-3 text-[0.7rem] font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+					{group.label}
+				</span>
+				<ul class="m-0 list-none p-0">
 					{#each group.items as item}
 						<li>
 							<a
 								href={item.href}
-                                target={item.href.startsWith('http') ? '_blank' : undefined}
-                                class="sidebar-link"
-                                class:active={isActive(item.href)}
-                                onclick={() => onnavigate?.()}
-                            >
-                                {item.title}
-                            </a>
+								target={item.href.startsWith('http') ? '_blank' : undefined}
+								class="block rounded-md px-3 py-1.5 text-[0.84rem] no-underline transition-[color,background] duration-150
+									{isActive(item.href)
+										? 'text-[var(--fk-cyan)] bg-[rgba(104,215,239,0.06)]'
+										: 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-white/[0.03]'}"
+								onclick={() => onnavigate?.()}
+							>
+								{item.title}
+							</a>
 						</li>
 					{/each}
 				</ul>
@@ -77,63 +81,3 @@
 		{/each}
 	</nav>
 </aside>
-
-<style>
-	.sidebar {
-		width: 220px;
-		flex-shrink: 0;
-		position: sticky;
-		top: 5rem;
-		max-height: calc(100vh - 6rem);
-		overflow-y: auto;
-		padding-right: 1.5rem;
-	}
-
-	.sidebar-group {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-	}
-
-	.sidebar-label {
-		font-size: 0.7rem;
-		font-weight: 600;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		color: var(--muted-foreground);
-		padding: 0 0.75rem;
-		margin-bottom: 0.375rem;
-	}
-
-	.sidebar-sep {
-		height: 1px;
-		background: var(--border);
-		margin: 0.75rem 0;
-	}
-
-	ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-
-	.sidebar-link {
-		display: block;
-		padding: 0.375rem 0.75rem;
-		font-size: 0.84rem;
-		color: var(--muted-foreground);
-		text-decoration: none;
-		border-radius: 6px;
-		transition: color 0.15s, background 0.15s;
-	}
-
-	.sidebar-link:hover {
-		color: var(--foreground);
-		background: rgba(255, 255, 255, 0.03);
-	}
-
-	.sidebar-link.active {
-		color: var(--fk-cyan);
-		background: rgba(104, 215, 239, 0.06);
-	}
-</style>
