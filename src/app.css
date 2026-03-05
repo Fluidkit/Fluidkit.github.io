@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── FluidKit: dark-only theme on Stone base ─── */
+:root {
+	--radius: 0.625rem;
+
+	/* Core surfaces */
+	--background: oklch(0.07 0.005 50);          /* #0c0a09 */
+	--foreground: oklch(0.87 0.01 75);            /* #d6d3d1 */
+
+	--card: oklch(0.10 0.005 50);
+	--card-foreground: oklch(0.87 0.01 75);
+
+	--popover: oklch(0.12 0.005 50);
+	--popover-foreground: oklch(0.87 0.01 75);
+
+	/* Brand cyan as primary */
+	--primary: oklch(0.82 0.1 200);               /* #68D7EF */
+	--primary-foreground: oklch(0.07 0.005 50);
+
+	/* Subtle surface lift */
+	--secondary: oklch(0.14 0.005 50);
+	--secondary-foreground: oklch(0.87 0.01 75);
+
+	--muted: oklch(0.18 0.005 50);
+	--muted-foreground: oklch(0.55 0.01 60);      /* #8f8984 */
+
+	/* Brand purple as accent */
+	--accent: oklch(0.55 0.17 290);               /* #7A60FD */
+	--accent-foreground: oklch(0.95 0.005 75);
+
+	--destructive: oklch(0.577 0.245 27.325);
+
+	--border: oklch(1 0 0 / 8%);
+	--input: oklch(1 0 0 / 12%);
+	--ring: oklch(0.82 0.1 200);
+
+	/* Charts — brand palette */
+	--chart-1: oklch(0.82 0.1 200);               /* cyan */
+	--chart-2: oklch(0.55 0.17 290);              /* purple */
+	--chart-3: oklch(0.70 0.12 220);              /* blue */
+	--chart-4: oklch(0.769 0.188 70.08);
+	--chart-5: oklch(0.645 0.246 16.439);
+
+	/* Sidebar */
+	--sidebar: oklch(0.09 0.005 50);
+	--sidebar-foreground: oklch(0.87 0.01 75);
+	--sidebar-primary: oklch(0.82 0.1 200);
+	--sidebar-primary-foreground: oklch(0.07 0.005 50);
+	--sidebar-accent: oklch(0.14 0.005 50);
+	--sidebar-accent-foreground: oklch(0.87 0.01 75);
+	--sidebar-border: oklch(1 0 0 / 8%);
+	--sidebar-ring: oklch(0.82 0.1 200);
+}
+
+/* ─── Brand tokens ─── */
+:root {
+	--fk-cyan: #68D7EF;
+	--fk-blue: #45A9EC;
+	--fk-purple: #7A60FD;
+	--fk-svelte: #ff3e00;
+	--fk-python-blue: #3776AB;
+	--fk-python-yellow: #FFD43B;
+
+	--fk-glass-bg: rgba(255, 255, 255, 0.03);
+	--fk-glass-border: rgba(255, 255, 255, 0.07);
+	--fk-glass-bg-hover: rgba(255, 255, 255, 0.06);
+}
+
+@theme inline {
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+
+	/* Brand colors available as Tailwind utilities: bg-fk-cyan, text-fk-purple, etc. */
+	--color-fk-cyan: var(--fk-cyan);
+	--color-fk-blue: var(--fk-blue);
+	--color-fk-purple: var(--fk-purple);
+	--color-fk-svelte: var(--fk-svelte);
+	--color-fk-python-blue: var(--fk-python-blue);
+	--color-fk-python-yellow: var(--fk-python-yellow);
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+		font-family: 'Inter', system-ui, -apple-system, sans-serif;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+	code, pre, kbd {
+		font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+	}
+}
+
+/* ─── Utility classes ─── */
+@utility fk-gradient-text {
+	background: linear-gradient(135deg, var(--fk-cyan), var(--fk-purple));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+@utility fk-glass {
+	background: var(--fk-glass-bg);
+	border: 1px solid var(--fk-glass-border);
+	backdrop-filter: blur(12px);
+}
