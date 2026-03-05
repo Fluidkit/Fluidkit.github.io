@@ -24,7 +24,7 @@
 			code: [
 				'<span class="dc">@query</span>',
 				'<span class="kw">async def</span> <span class="fn">get_posts</span>():',
-				'    <span class="kw">return await</span> db.<span class="fn">get_all</span>()',
+				'    <span class="kw ml-6">return await</span> db.<span class="fn">get_all</span>()',
 			]
 		},
 		{
@@ -40,7 +40,7 @@
 		},
 		{
 			label: 'You import',
-			title: '.remote.ts',
+			title: '.svelte',
 			color: 'var(--fk-purple)',
 			code: [
 				'<span class="im">import</span> { <span class="fn">get_posts</span> }',

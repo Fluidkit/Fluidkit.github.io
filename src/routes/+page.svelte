@@ -82,7 +82,7 @@
 			code: [
 				'<span class="dc">@query</span>',
 				'<span class="kw">async def</span> <span class="fn">get_posts</span>() <span class="op">-&gt;</span> <span class="tp">list</span>[<span class="tp">Post</span>]:',
-				'    <span class="kw">return await</span> db.<span class="fn">get_all</span>()',
+				'    <span class="kw ml-6">return await</span> db.<span class="fn">get_all</span>()',
 			]
 		},
 		{
@@ -93,7 +93,7 @@
 			code: [
 				'<span class="dc">@form</span>',
 				'<span class="kw">async def</span> <span class="fn">create</span>(<span class="pr">title</span>: <span class="tp">str</span>, <span class="pr">photo</span>: <span class="tp">FileUpload</span>):',
-				'    <span class="kw">await</span> db.<span class="fn">insert</span>(<span class="pr">title</span>, <span class="pr">photo</span>)',
+				'    <span class="kw ml-6">await</span> db.<span class="fn">insert</span>(<span class="pr">title</span>, <span class="pr">photo</span>)',
 			]
 		},
 		{
@@ -104,7 +104,7 @@
 			code: [
 				'<span class="dc">@command</span>',
 				'<span class="kw">async def</span> <span class="fn">like_post</span>(<span class="pr">post_id</span>: <span class="tp">int</span>):',
-				'    <span class="kw">await</span> db.<span class="fn">increment</span>(<span class="pr">post_id</span>)',
+				'    <span class="kw ml-6">await</span> db.<span class="fn">increment</span>(<span class="pr">post_id</span>)',
 			]
 		},
 		{
@@ -115,7 +115,7 @@
 			code: [
 				'<span class="dc">@prerender</span>(<span class="pr">inputs</span>=<span class="op">[</span><span class="st">"about"</span>, <span class="st">"contact"</span><span class="op">]</span>)',
 				'<span class="kw">async def</span> <span class="fn">get_page</span>(<span class="pr">slug</span>: <span class="tp">str</span>):',
-				'    <span class="kw">return await</span> db.<span class="fn">find</span>(<span class="pr">slug</span>)',
+				'    <span class="kw ml-6">return await</span> db.<span class="fn">find</span>(<span class="pr">slug</span>)',
 			]
 		}
 	];
