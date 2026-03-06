@@ -1,0 +1,336 @@
+# FluidKit
+
+> Web development for the Pythonist
+
+FluidKit bridges Python and SvelteKit into a unified fullstack framework. Decorate async Python functions — FluidKit registers them as FastAPI endpoints and generates colocated `.remote.ts` files that SvelteKit imports as native remote functions with full type safety.
+
+- Website: https://aswanthmanoj.github.io/fluidkit
+- GitHub: https://github.com/AswanthManoj/Fluidkit
+- PyPI: https://pypi.org/project/fluidkit/
+- SvelteKit remote functions: https://svelte.dev/docs/kit/remote-functions
+- Full LLM reference: https://aswanthmanoj.github.io/fluidkit/llm-full.txt
+
+## Install
+
+pip install fluidkit
+
+No system Node.js required — FluidKit bundles it via nodejs-wheel.
+
+## How it works
+
+1. You decorate an async Python function with @query, @command, @form, or @prerender
+2. FluidKit registers it as a FastAPI endpoint (parameter types, validation, return types extracted automatically)
+3. FluidKit generates a colocated `.remote.ts` file — a SvelteKit remote function wrapper with full TypeScript types
+4. You import from `$lib/yourfile.remote` in Svelte and use it as a native SvelteKit remote function
+
+Generated `.remote.ts` files update automatically on save in dev mode via HMR. They are real TypeScript you can inspect.
+
+## Decorators
+
+### @query — Read data
+
+Cached on client, refreshable on demand. Errors trigger nearest <svelte:boundary> when using await.
+```python
+from fluidkit import query
+
+@query
+async def get_posts() -> list[Post]:
+    return await db.get_all_posts()
+```
+
+Svelte usage:
+```svelte
+<script>
+  import { get_posts } from '$lib/posts.remote';
+</script>
+{#each await get_posts() as post}
+  <h2>{post.title}</h2>
+{/each}
+```
+
+Query also exposes .loading, .error, .current properties as an alternative to await.
+
+Refreshing: get_posts().refresh() — refetches from server.
+Caching: get_posts() === get_posts() — cached while on page, no reference needed.
+
+#### @query.batch — Solve N+1
+
+Batches concurrent calls into a single request. Function receives list of all arguments, must return a callable (arg, index) -> result.
+```python
+@query.batch
+async def get_post_likes(post_ids: list[int]):
+    likes = await db.get_likes_bulk(post_ids)
+    lookup = {row.post_id: row.likes for row in likes}
+    return lambda post_id, idx: lookup.get(post_id, 0)
+```
+
+Svelte side usage is identical to regular @query — each call uses a single argument.
+
+### @form — Write data via forms
+
+Works without JavaScript (progressive enhancement). Supports file uploads and redirects. Errors render nearest +error.svelte.
+```python
+from fluidkit import form, Redirect, FileUpload
+
+@form
+async def create_post(title: str, content: str) -> None:
+    slug = title.lower().replace(" ", "-")
+    await db.insert(slug, title, content)
+    raise Redirect(303, f"/blog/{slug}")
+
+@form
+async def upload_file(label: str, attachment: FileUpload) -> dict:
+    contents = await attachment.read()
+    return {"success": True, "filename": attachment.filename}
+```
+
+Svelte usage:
+```svelte
+<form {...create_post}>
+  <input {...create_post.fields.title.as('text')} />
+  <input {...create_post.fields.content.as('text')} />
+  <button>Publish</button>
+</form>
+```
+
+For file uploads, add enctype="multipart/form-data" to the form.
+FileUpload extends FastAPI's UploadFile — read(), filename, content_type are available.
+
+Supported parameter types: str, int, float, bool, FileUpload, list[str], list[int], Optional[...].
+Complex nested types (Pydantic models, dicts) are NOT supported in @form — use @command instead.
+This is a FluidKit-specific limitation, not a SvelteKit one.
+
+Prefix sensitive params with underscore (e.g. _password) to prevent round-tripping on validation failure.
+
+Validation: add_post.fields.title.issues() returns validation errors. add_post.validate() triggers validation.
+Returns: add_post.result?.success — ephemeral, vanishes on resubmit/navigation/reload.
+
+Enhance (custom submit behavior):
+```svelte
+<form {...add_post.enhance(async ({ form, data, submit }) => {
+  await submit();
+  form.reset();  // not automatic with enhance
+})}>
+```
+
+Redirect status codes: 303 (See Other, most common), 307 (Temporary), 308 (Permanent).
+
+### @command — Write data imperatively
+
+Called from event handlers, not tied to a form. Requires JavaScript. Errors are caught by your own try/catch.
+```python
+from fluidkit import command
+
+@command
+async def like_post(post_id: int) -> bool:
+    return await db.increment_likes(post_id)
+```
+
+Svelte usage:
+```svelte
+<button onclick={async () => {
+  try {
+    await like_post(post.id);
+  } catch (err) {
+    showToast('Something went wrong');
+  }
+}}>
+```
+
+Commands cannot be called during render.
+Commands do NOT support redirects in FluidKit — use @form for redirect behavior.
+
+Client-driven query updates:
+  await like_post(post.id).updates(get_posts())
+
+Optimistic updates:
+  await like_post(post.id).updates(
+    get_posts().withOverride((posts) => posts.map(p => p.id === post.id ? { ...p, likes: p.likes + 1 } : p))
+  )
+
+### @prerender — Build-time data
+
+Runs at build time, served as static assets. Cached via browser Cache API. Cache survives reloads, cleared on new deployment.
+```python
+from fluidkit import prerender
+
+@prerender
+async def get_site_config() -> SiteConfig:
+    return await db.get_config()
+
+@prerender(inputs=["about", "contact"], dynamic=True)
+async def get_page(slug: str) -> Page:
+    return await db.get_page(slug)
+```
+
+inputs: list of arguments to prerender at build time. Also accepts a callable: inputs=lambda: db.get_all_slugs()
+dynamic=True: allows runtime fallback for non-prerendered arguments (default: excluded from server bundle).
+Callable inputs are evaluated at build time but cannot be serialized into generated .remote.ts.
+
+Prerender functions cannot set cookies and do not support .refresh() or .set().
+
+## Single-flight mutations
+
+Inside @form and @command handlers, update queries without a second round-trip:
+```python
+await get_posts().refresh()  # re-executes query, sends new data with response
+await get_posts().set(data)  # sets value directly without re-executing
+```
+
+.refresh() and .set() only work inside @form and @command handlers.
+
+By default, all queries on the page are refreshed after a successful @form submission.
+For @command, you must explicitly specify which queries to update.
+
+## Key APIs
+
+### error(status, message)
+Raise to return an HTTP error. Behavior depends on context:
+- @query: triggers nearest <svelte:boundary>
+- @form: renders nearest +error.svelte
+- @command: caught by caller's try/catch
+```python
+from fluidkit import error
+raise error(404, "Not found")
+```
+
+### Redirect(status, url)
+Only works in @form. Raises to navigate after submission.
+```python
+from fluidkit import Redirect
+raise Redirect(303, "/dashboard")
+```
+
+### get_request_event()
+Access cookies and request data. Available in all decorators.
+```python
+from fluidkit import get_request_event
+
+event = get_request_event()
+session_id = event.cookies.get("session_id")
+event.cookies.set("session_id", value, httponly=True, path="/")  # only in @form and @command
+```
+
+Cookie options: httponly, path, max_age, secure, samesite, domain — passed through to SvelteKit's cookie API.
+event.locals is a dict for passing data between hooks and handlers.
+Queries and prerender can read cookies but NOT set them.
+
+### FileUpload
+File parameter type for @form. Extends FastAPI's UploadFile.
+```python
+from fluidkit import FileUpload
+
+@form
+async def upload(photo: FileUpload):
+    contents = await photo.read()
+    name = photo.filename
+    mime = photo.content_type
+```
+
+### preserve(value_or_factory)
+Keep expensive objects alive across HMR reloads in dev mode.
+```python
+from fluidkit import preserve
+
+client = preserve(lambda: httpx.AsyncClient(base_url="https://api.example.com"))
+cache = preserve({})
+```
+
+Accepts a value or zero-argument callable. Callable is invoked only on first execution.
+Only use for objects that must survive re-execution (DB connections, HTTP clients).
+
+## Lifecycle hooks
+```python
+from fluidkit import on_startup, on_shutdown, lifespan
+
+@on_startup
+async def connect_db():
+    global db
+    db = await Database.connect("postgresql://...")
+
+@on_shutdown
+async def disconnect_db():
+    await db.disconnect()
+
+@lifespan
+async def manage_redis():
+    global redis_client
+    redis_client = await aioredis.from_url("redis://localhost")
+    yield
+    await redis_client.close()
+```
+
+@lifespan can optionally accept the FastAPI app as a parameter.
+
+## Type mapping
+
+Python type annotations and Pydantic models are reflected into TypeScript automatically.
+
+| Python | TypeScript |
+|---|---|
+| str | string |
+| int, float | number |
+| bool | boolean |
+| list[X] | X[] |
+| dict | Record<string, unknown> |
+| Optional[X] | X \| null |
+| X \| None | X \| null |
+| Pydantic BaseModel | interface |
+| Enum(str, Enum) | enum |
+
+Unannotated parameters generate `any` — always annotate for type safety.
+
+## Generated files
+
+For `src/lib/posts.py` containing decorated functions, FluidKit generates:
+- `src/lib/posts.remote.ts` — SvelteKit remote function wrappers (import from `$lib/posts.remote`)
+- `$fluidkit/schema.ts` — TypeScript interfaces and enums from Pydantic models
+
+Generated files update automatically on save in dev mode. Do not edit them manually.
+
+## CLI
+```
+fluidkit init [name]          # scaffold SvelteKit project with FluidKit
+fluidkit dev                  # FastAPI + Vite together with HMR
+fluidkit build                # codegen + npm run build
+fluidkit preview              # preview production build locally
+fluidkit install <pkg>        # shorthand for npm install (-D for dev)
+fluidkit npm <args>           # passthrough to npm
+fluidkit npx <args>           # passthrough to npx
+fluidkit node <args>          # passthrough to node
+```
+
+Dev flags: --host, --backend-port, --frontend-port, --no-hmr
+
+## Configuration
+
+fluidkit.config.json in project root:
+```json
+{
+  "entry": "src/app.py",
+  "host": "0.0.0.0",
+  "backend_port": 8000,
+  "frontend_port": 5173,
+  "schema_output": "src/lib/fluidkit",
+  "watch_pattern": "src/**/*.py"
+}
+```
+
+Precedence: CLI flags > fluidkit.config.json > defaults.
+
+## Error behavior summary
+
+| Decorator   | Error behavior                                          |
+|-------------|----------------------------------------------------------|
+| @query      | Triggers nearest <svelte:boundary>                       |
+| @form       | Renders nearest +error.svelte                            |
+| @command    | Caught by caller's try/catch                             |
+| @prerender  | Fails build; with dynamic=True at runtime, same as @query |
+
+## Built with
+
+- SvelteKit — frontend framework with remote functions
+- FastAPI — API layer and request handling
+- Pydantic — type extraction and validation
+- Jurigged — hot module reloading in dev mode
+- nodejs-wheel — bundled Node.js, no system install needed
