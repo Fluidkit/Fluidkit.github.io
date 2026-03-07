@@ -4,11 +4,11 @@
 
 FluidKit bridges Python and SvelteKit into a unified fullstack framework. Decorate async Python functions — FluidKit registers them as FastAPI endpoints and generates colocated `.remote.ts` files that SvelteKit imports as native remote functions with full type safety.
 
-- Website: https://aswanthmanoj.github.io/fluidkit
+- Website: https://fluidkit.github.io
 - GitHub: https://github.com/AswanthManoj/Fluidkit
 - PyPI: https://pypi.org/project/fluidkit/
 - SvelteKit remote functions: https://svelte.dev/docs/kit/remote-functions
-- Full LLM reference: https://aswanthmanoj.github.io/fluidkit/llm-full.txt
+- Full LLM reference: https://fluidkit.github.io/llm-full.txt
 
 ## Install
 

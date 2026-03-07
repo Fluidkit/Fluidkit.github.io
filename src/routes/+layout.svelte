@@ -17,6 +17,15 @@
 	/>
 	<title>FluidKit — Web development for the Pythonist</title>
 	<meta name="description" content="Bridge Python and SvelteKit into a unified fullstack framework with full type safety." />
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="FluidKit — Web development for the Pythonist" />
+	<meta property="og:description" content="Write backend functions in Python. FluidKit turns them into type-safe SvelteKit remote functions." />
+	<meta property="og:url" content="https://fluidkit.github.io" />
+	<meta property="og:image" content="https://fluidkit.github.io/og.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
 </svelte:head>
 
 <div class="flex min-h-screen flex-col">
