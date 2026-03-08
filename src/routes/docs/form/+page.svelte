@@ -9,7 +9,8 @@
 
 <p>
 	Use <code>@form</code> to write data via <code>&lt;form&gt;</code> elements. Forms work without
-	JavaScript (progressive enhancement), support file uploads, and can trigger redirects.
+	JavaScript (progressive enhancement), support file uploads, nested Pydantic models, and can
+	trigger redirects.
 </p>
 
 <h2>Basic usage</h2>
@@ -44,6 +45,23 @@
 	used to construct form data, and the <code>aria-invalid</code> state for validation.
 </p>
 
+<h2>Nested types</h2>
+
+<p>
+	Forms support Pydantic models, arrays, and nested objects as parameters. SvelteKit parses the
+	flat form fields into structured data before FluidKit forwards it to your Python handler:
+</p>
+
+<DocCode html={b.nestedPy.html} filename={b.nestedPy.filename} lang={b.nestedPy.lang} />
+
+<DocCode html={b.nestedSvelte.html} lang={b.nestedSvelte.lang} />
+
+<p>
+	Nested fields use dot notation for objects (<code>info.height</code>) and bracket notation for
+	arrays (<code>tags[0]</code>). SvelteKit coerces values based on the input name prefix:
+	<code>n:</code> for numbers, <code>b:</code> for booleans.
+</p>
+
 <h2>File uploads</h2>
 
 <p>
@@ -59,6 +77,15 @@
 	<code>FileUpload</code> extends FastAPI's <code>UploadFile</code>, so all its methods
 	(<code>read()</code>, <code>filename</code>, <code>content_type</code>, etc.) are available.
 </p>
+
+<p>
+	Files work alongside nested types. When files are present, FluidKit sends structured data as
+	JSON and files as separate multipart fields:
+</p>
+
+<DocCode html={b.fileUploadNestedPy.html} lang={b.fileUploadNestedPy.lang} />
+
+<DocCode html={b.fileUploadNestedSvelte.html} lang={b.fileUploadNestedSvelte.lang} />
 
 <h2>Redirects</h2>
 
@@ -171,22 +198,16 @@
 <h2>Supported parameter types</h2>
 
 <p>
-	<code>@form</code> parameters must be types that can be represented as form fields:
+	<code>@form</code> supports any type that can be represented as form fields:
 </p>
 
 <ul>
 	<li><code>str</code>, <code>int</code>, <code>float</code>, <code>bool</code> — primitive inputs</li>
-	<li><code>FileUpload</code> — file inputs</li>
-	<li><code>list[str]</code>, <code>list[int]</code>, etc. — multiple inputs with the same field name</li>
+	<li><code>FileUpload</code>, <code>list[FileUpload]</code> — file inputs</li>
+	<li><code>list[str]</code>, <code>list[int]</code>, etc. — multiple inputs with bracket notation</li>
 	<li><code>Optional[...]</code> — optional fields</li>
+	<li>Pydantic <code>BaseModel</code> — nested objects via dot notation</li>
 </ul>
-
-<p>
-	For complex nested types (Pydantic models, dicts, unions), use
-	<a href="/docs/command"><code>@command</code></a> instead. This is a FluidKit-specific
-	constraint — SvelteKit's native forms support nested objects and arrays, but FluidKit's codegen
-	currently limits forms to flat field structures.
-</p>
 
 <h2>Next steps</h2>
 

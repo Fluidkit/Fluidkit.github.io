@@ -68,7 +68,8 @@ Svelte side usage is identical to regular @query — each call uses a single arg
 
 ### @form — Write data via forms
 
-Works without JavaScript (progressive enhancement). Supports file uploads and redirects. Errors render nearest +error.svelte.
+Works without JavaScript (progressive enhancement). Supports file uploads, nested Pydantic models, and redirects. Errors render nearest +error.svelte.
+
 ```python
 from fluidkit import form, Redirect, FileUpload
 
@@ -96,9 +97,36 @@ Svelte usage:
 For file uploads, add enctype="multipart/form-data" to the form.
 FileUpload extends FastAPI's UploadFile — read(), filename, content_type are available.
 
-Supported parameter types: str, int, float, bool, FileUpload, list[str], list[int], Optional[...].
-Complex nested types (Pydantic models, dicts) are NOT supported in @form — use @command instead.
-This is a FluidKit-specific limitation, not a SvelteKit one.
+Supported parameter types: str, int, float, bool, FileUpload, list[FileUpload], list[str], list[int], Optional[...], Pydantic BaseModel (nested objects via dot notation).
+
+Nested types example:
+```python
+from typing import Optional
+from pydantic import BaseModel
+from fluidkit import form, FileUpload
+
+class Info(BaseModel):
+    height: int
+    likesDogs: Optional[bool] = None
+
+@form
+async def create_profile(name: str, age: int, tags: list[str], info: Info, photo: FileUpload) -> None:
+    await db.insert_profile(name, age, tags, info)
+```
+```svelte
+<form {...create_profile} enctype="multipart/form-data">
+  <input {...create_profile.fields.name.as('text')} />
+  <input {...create_profile.fields.age.as('number')} />
+  <input {...create_profile.fields.tags[0].as('text')} />
+  <input {...create_profile.fields.tags[1].as('text')} />
+  <input {...create_profile.fields.info.height.as('number')} />
+  <input {...create_profile.fields.info.likesDogs.as('checkbox')} />
+  <input {...create_profile.fields.photo.as('file')} />
+  <button>Save</button>
+</form>
+```
+
+Nested fields use dot notation for objects (info.height) and bracket notation for arrays (tags[0]). SvelteKit coerces values based on input name prefix: n: for numbers, b: for booleans. Files work alongside nested types — FluidKit sends structured data as JSON and files as separate multipart fields.
 
 Prefix sensitive params with underscore (e.g. _password) to prevent round-tripping on validation failure.
 

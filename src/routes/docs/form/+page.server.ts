@@ -40,6 +40,40 @@ async def create_profile(name: str, age: int, bio: str) -> None:
   <button>Save</button>
 </form>`
 			},
+			nestedPy: {
+				lang: 'python',
+				filename: 'src/lib/profiles.py',
+				code: `from typing import Optional
+from pydantic import BaseModel
+from fluidkit import form
+
+class Info(BaseModel):
+    height: int
+    likesDogs: Optional[bool] = None
+
+@form
+async def create_profile(name: str, age: int, tags: list[str], info: Info) -> None:
+    await db.insert_profile(name, age, tags, info)`
+			},
+			nestedSvelte: {
+				lang: 'svelte',
+				code: `<script>
+  import { create_profile } from '$lib/profiles.remote';
+</script>
+
+<form {...create_profile}>
+  <input {...create_profile.fields.name.as('text')} />
+  <input {...create_profile.fields.age.as('number')} />
+
+  <input {...create_profile.fields.tags[0].as('text')} placeholder="Tag 1" />
+  <input {...create_profile.fields.tags[1].as('text')} placeholder="Tag 2" />
+
+  <input {...create_profile.fields.info.height.as('number')} />
+  <input {...create_profile.fields.info.likesDogs.as('checkbox')} /> Likes dogs
+
+  <button>Save</button>
+</form>`
+			},
 			fileUploadPy: {
 				lang: 'python',
 				filename: 'src/lib/uploads.py',
@@ -57,6 +91,44 @@ async def upload_avatar(username: str, photo: FileUpload) -> None:
   <input {...upload_avatar.fields.username.as('text')} />
   <input {...upload_avatar.fields.photo.as('file')} />
   <button>Upload</button>
+</form>`
+			},
+			fileUploadNestedPy: {
+				lang: 'python',
+				code: `from pydantic import BaseModel
+from fluidkit import form, FileUpload
+
+class Info(BaseModel):
+    height: int
+    likesDogs: bool = False
+
+@form
+async def create_profile(
+    name: str,
+    info: Info,
+    tags: list[str],
+    photo: FileUpload,
+    docs: list[FileUpload],
+) -> None:
+    await storage.save(photo.filename, await photo.read())
+    for doc in docs:
+        await storage.save(doc.filename, await doc.read())
+    await db.insert_profile(name, info, tags)`
+			},
+			fileUploadNestedSvelte: {
+				lang: 'svelte',
+				code: `<form {...create_profile} enctype="multipart/form-data">
+  <input {...create_profile.fields.name.as('text')} />
+  <input {...create_profile.fields.info.height.as('number')} />
+  <input {...create_profile.fields.info.likesDogs.as('checkbox')} /> Likes dogs
+
+  <input {...create_profile.fields.tags[0].as('text')} placeholder="Tag 1" />
+  <input {...create_profile.fields.tags[1].as('text')} placeholder="Tag 2" />
+
+  <input {...create_profile.fields.photo.as('file')} />
+  <input {...create_profile.fields.docs.as('file')} multiple />
+
+  <button>Save</button>
 </form>`
 			},
 			redirectPy: {

@@ -295,6 +295,77 @@ async def create_profile(name: str, age: int, bio: str) -> None:
 
 The .as(...) method sets the correct input type, the name attribute used to construct form data, and the aria-invalid state for validation.
 
+### Nested types
+
+Forms support Pydantic models, arrays, and nested objects as parameters. SvelteKit parses flat form fields into structured data before FluidKit forwards it to your Python handler:
+```python
+from typing import Optional
+from pydantic import BaseModel
+from fluidkit import form
+
+class Info(BaseModel):
+    height: int
+    likesDogs: Optional[bool] = None
+
+@form
+async def create_profile(name: str, age: int, tags: list[str], info: Info) -> None:
+    await db.insert_profile(name, age, tags, info)
+```
+```svelte
+<form {...create_profile}>
+  <input {...create_profile.fields.name.as('text')} />
+  <input {...create_profile.fields.age.as('number')} />
+
+  <input {...create_profile.fields.tags[0].as('text')} placeholder="Tag 1" />
+  <input {...create_profile.fields.tags[1].as('text')} placeholder="Tag 2" />
+
+  <input {...create_profile.fields.info.height.as('number')} />
+  <input {...create_profile.fields.info.likesDogs.as('checkbox')} /> Likes dogs
+
+  <button>Save</button>
+</form>
+```
+
+Nested fields use dot notation for objects (info.height) and bracket notation for arrays (tags[0]). SvelteKit coerces values based on the input name prefix: n: for numbers, b: for booleans.
+
+Files work alongside nested types. When files are present, FluidKit sends structured data as JSON and files as separate multipart fields:
+```python
+from pydantic import BaseModel
+from fluidkit import form, FileUpload
+
+class Info(BaseModel):
+    height: int
+    likesDogs: bool = False
+
+@form
+async def create_profile(
+    name: str,
+    info: Info,
+    tags: list[str],
+    photo: FileUpload,
+    docs: list[FileUpload],
+) -> None:
+    await storage.save(photo.filename, await photo.read())
+    for doc in docs:
+        await storage.save(doc.filename, await doc.read())
+    await db.insert_profile(name, info, tags)
+```
+```svelte
+<form {...create_profile} enctype="multipart/form-data">
+  <input {...create_profile.fields.name.as('text')} />
+  <input {...create_profile.fields.info.height.as('number')} />
+  <input {...create_profile.fields.info.likesDogs.as('checkbox')} /> Likes dogs
+
+  <input {...create_profile.fields.tags[0].as('text')} placeholder="Tag 1" />
+  <input {...create_profile.fields.tags[1].as('text')} placeholder="Tag 2" />
+
+  <input {...create_profile.fields.photo.as('file')} />
+  <input {...create_profile.fields.docs.as('file')} multiple />
+
+  <button>Save</button>
+</form>
+```
+
 ### File uploads
 
 Use FileUpload for file parameters:
@@ -469,13 +540,12 @@ When using enhance, the form is not automatically reset — call form.reset() ex
 
 ### Supported parameter types
 
-@form parameters must be types that can be represented as form fields:
+@form supports any type that can be represented as form fields:
 - str, int, float, bool — primitive inputs
-- FileUpload — file inputs
-- list[str], list[int], etc. — multiple inputs with the same field name
+- FileUpload, list[FileUpload] — file inputs
+- list[str], list[int], etc. — multiple inputs with bracket notation
 - Optional[...] — optional fields
-
-For complex nested types (Pydantic models, dicts, unions), use @command instead. This is a FluidKit-specific constraint — SvelteKit's native forms support nested objects and arrays, but FluidKit's codegen currently limits forms to flat field structures.
+- Pydantic BaseModel — nested objects via dot notation
 
 ---
 
@@ -1178,6 +1248,7 @@ The schema_output directory contains FluidKit's generated TypeScript files. A $f
 | Write data         |        | ✓     | ✓        |            |
 | Works without JS   |        | ✓     |          |            |
 | File uploads       |        | ✓     |          |            |
+| Nested types       |        | ✓     | ✓        |            |
 | Redirects          |        | ✓     |          |            |
 | Batching           | ✓      |       |          |            |
 | .refresh()/.set()  |        | ✓     | ✓        |            |
