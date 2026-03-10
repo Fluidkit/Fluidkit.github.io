@@ -75,6 +75,13 @@
 	</li>
 </ul>
 
+<p>
+	All four decorators support both <code>async</code> and regular sync functions. Use
+	<code>async def</code> when you need <code>await</code> — for database calls, HTTP requests, or
+	<code>.refresh()</code> and <code>.set()</code>. Use plain <code>def</code> for simple
+	synchronous logic. FluidKit handles both transparently.
+</p>
+
 <h2>Next steps</h2>
 
 <ul>

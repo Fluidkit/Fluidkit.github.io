@@ -69,6 +69,15 @@ async def get_post(slug: str) -> Post:
 async def get_post(slug: str) -> Post:
     ...`
 			},
+			inputsAsyncCallable: {
+	lang: 'python',
+	code: `async def get_all_slugs():
+    return await db.fetch_slugs()
+
+@prerender(inputs=get_all_slugs)
+async def get_post(slug: str) -> Post:
+    ...`
+			},
 			dynamicPy: {
 				lang: 'python',
 				code: `@prerender(inputs=["hello-world", "about-fluidkit"], dynamic=True)

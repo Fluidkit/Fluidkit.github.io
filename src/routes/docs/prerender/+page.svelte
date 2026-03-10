@@ -48,12 +48,9 @@
 
 <DocCode html={b.inputsCallable.html} lang={b.inputsCallable.lang} />
 
-<blockquote>
-	<p>
-		Callable inputs are evaluated at build time but cannot be serialized into the generated
-		<code>.remote.ts</code> file. Static lists are preferred when possible.
-	</p>
-</blockquote>
+<p>Async callables work too:</p>
+
+<DocCode html={b.inputsAsyncCallable.html} lang={b.inputsAsyncCallable.lang} />
 
 <h2>Dynamic fallback</h2>
 
@@ -130,10 +127,6 @@
 	<li>
 		Prerender functions do not support <code>.refresh()</code> or <code>.set()</code> — data is
 		static
-	</li>
-	<li>
-		Callable <code>inputs</code> work at build time but won't appear in the generated
-		<code>.remote.ts</code>
 	</li>
 </ul>
 
