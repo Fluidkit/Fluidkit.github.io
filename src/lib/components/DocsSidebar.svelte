@@ -37,6 +37,8 @@
 			items: [
 				{ title: 'CLI', href: `${base}/docs/cli` },
 				{ title: 'Configuration', href: `${base}/docs/config` },
+				{ title: 'llm.txt', href: '/llm.txt' },
+				{ title: 'llm-full.txt', href: '/llm-full.txt' },
 			]
 		}
 	];

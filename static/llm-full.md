@@ -1210,7 +1210,8 @@ fluidkit.config.json in project root (created by fluidkit init):
   "backend_port": 8000,
   "frontend_port": 5173,
   "schema_output": "src/lib/fluidkit",
-  "watch_pattern": "src/**/*.py"
+  "watch_pattern": "src/**/*.py",
+  "signed": true
 }
 ```
 
@@ -1222,6 +1223,7 @@ fluidkit.config.json in project root (created by fluidkit init):
 | frontend_port  | int    | 5173                 | Port for the Vite dev server                       |
 | schema_output  | string | "src/lib/fluidkit"   | Directory for generated runtime TypeScript files   |
 | watch_pattern  | string | "src/**/*.py"        | Glob pattern for HMR file watching                 |
+| signed         | bool   | true                 | Whether SvelteKit→FastAPI requests are HMAC-signed. Disable if you are handling request authentication yourself |
 
 Precedence: CLI flags > fluidkit.config.json > defaults.
 

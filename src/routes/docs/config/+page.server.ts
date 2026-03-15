@@ -12,7 +12,8 @@ export async function load() {
   "backend_port": 8000,
   "frontend_port": 5173,
   "schema_output": "src/lib/fluidkit",
-  "watch_pattern": "src/**/*.py"
+  "watch_pattern": "src/**/*.py",
+  "signed": true
 }`
 			}
 		})

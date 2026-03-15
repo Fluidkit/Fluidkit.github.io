@@ -64,6 +64,12 @@
 			<td><code>"src/**/*.py"</code></td>
 			<td>Glob pattern for HMR file watching</td>
 		</tr>
+		<tr>
+			<td><code>signed</code></td>
+			<td><code>bool</code></td>
+			<td><code>true</code></td>
+			<td>Whether SvelteKit→FastAPI requests are HMAC-signed. Disable if you are handling request authentication yourself</td>
+		</tr>
 	</tbody>
 </table>
 

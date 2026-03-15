@@ -342,11 +342,14 @@ fluidkit.config.json in project root:
   "backend_port": 8000,
   "frontend_port": 5173,
   "schema_output": "src/lib/fluidkit",
-  "watch_pattern": "src/**/*.py"
+  "watch_pattern": "src/**/*.py",
+  "signed": true
 }
 ```
 
 Precedence: CLI flags > fluidkit.config.json > defaults.
+
+`signed` controls whether SvelteKit→FastAPI requests are HMAC-signed. Disable if you are handling request authentication yourself.
 
 ## Error behavior summary
 
