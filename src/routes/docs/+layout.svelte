@@ -1,7 +1,8 @@
 <!-- src/routes/docs/+layout.svelte -->
 <script lang="ts">
-	import DocsSidebar from '$lib/components/DocsSidebar.svelte';
 	import * as Sheet from '$lib/components/ui/sheet';
+	import AskClaude from '$lib/components/AskClaude.svelte';
+	import DocsSidebar from '$lib/components/DocsSidebar.svelte';
 
 	let { children } = $props();
 	let mobileNav = $state(false);
@@ -48,4 +49,9 @@
 	<article class="docs-prose min-w-0 max-w-3xl flex-1">
 		{@render children()}
 	</article>
+
+	<!-- Floating Ask Claude -->
+	<div class="fixed bottom-6 right-6 z-50">
+		<AskClaude />
+	</div>
 </div>

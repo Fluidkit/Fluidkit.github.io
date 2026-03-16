@@ -1,43 +1,43 @@
 import { createHighlighter, type Highlighter } from 'shiki';
 
-let highlighter: Highlighter | null = null;
+let highlighterPromise: Promise<Highlighter> | null = null;
 
-async function getShiki(): Promise<Highlighter> {
-	if (!highlighter) {
-		highlighter = await createHighlighter({
-			themes: ['github-dark-dimmed'],
-			langs: ['python', 'svelte', 'typescript', 'javascript', 'bash', 'json', 'html', 'css', 'text']
-		});
-	}
-	return highlighter;
+function getShiki(): Promise<Highlighter> {
+  if (!highlighterPromise) {
+    highlighterPromise = createHighlighter({
+      themes: ['github-dark-dimmed'],
+      langs: ['python', 'svelte', 'typescript', 'javascript', 'bash', 'json', 'html', 'css', 'text']
+    });
+  }
+  return highlighterPromise;
 }
 
 export async function highlight(code: string, lang: string = 'text', filename?: string) {
-	const shiki = await getShiki();
+  const shiki = await getShiki();
 
-	const html = shiki.codeToHtml(code.trim(), {
-		lang,
-		theme: 'github-dark-dimmed',
-		transformers: [
-			{
-				pre(node) {
-					delete node.properties.style;
-				}
-			}
-		]
-	});
+  const html = shiki.codeToHtml(code.trim(), {
+    lang,
+    theme: 'github-dark-dimmed',
+    transformers: [
+      {
+        pre(node) {
+          delete node.properties.style;
+        }
+      }
+    ]
+  });
 
-	return { html, lang, filename };
+  return { html, lang, filename };
 }
 
 export async function highlightMany(
-	blocks: Record<string, { code: string; lang?: string; filename?: string }>
+  blocks: Record<string, { code: string; lang?: string; filename?: string }>
 ) {
-	const entries = await Promise.all(
-		Object.entries(blocks).map(async ([key, { code, lang, filename }]) => [
-			key,
-			await highlight(code, lang, filename)
-		])
-	);
-	return Object.fromEntries(entries);
+  const entries = await Promise.all(
+    Object.entries(blocks).map(async ([key, { code, lang, filename }]) => [
+      key,
+      await highlight(code, lang, filename)
+    ])
+  );
+  return Object.fromEntries(entries);
 }
