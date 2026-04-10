@@ -92,3 +92,9 @@
 	to this directory. If you change <code>schema_output</code>, the alias is updated on the next
 	<code>fluidkit dev</code> or <code>fluidkit build</code>.
 </p>
+
+<p>
+	This directory also contains <code>config.ts</code> — the generated file that exports
+	<code>BASE_URL</code> and the shared HTTP agent used by all generated <code>.remote.ts</code> files.
+	Do not edit any files in this directory manually.
+</p>

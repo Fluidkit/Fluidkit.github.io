@@ -62,11 +62,11 @@ async def delete_post(post_id: int) -> None:
     event = get_request_event()
     session_id = event.cookies.get("session_id")
     if not session_id:
-        raise error(401, "Unauthorized")
+        error(401, "Unauthorized")
 
     post = await db.find(post_id)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
 
     await db.delete(post_id)`
 			},

@@ -89,7 +89,7 @@
 
 <h2>Redirects</h2>
 
-<p>Raise <code>Redirect</code> to navigate after a successful submission:</p>
+<p>Call <code>redirect()</code> to navigate after a successful submission:</p>
 
 <DocCode html={b.redirectPy.html} lang={b.redirectPy.lang} />
 
@@ -106,7 +106,7 @@
 
 <h2>Errors</h2>
 
-<p>Raise <code>error()</code> to return an HTTP error:</p>
+<p>Call <code>error()</code> to return an HTTP error:</p>
 
 <DocCode html={b.errorsPy.html} lang={b.errorsPy.lang} />
 
@@ -215,4 +215,5 @@
 	<li><a href="/docs/command">@command</a> — write data from event handlers, not tied to a form</li>
 	<li><a href="/docs/query">@query</a> — read data, the queries you'll be refreshing</li>
 	<li><a href="/docs/prerender">@prerender</a> — build-time data with optional runtime fallback</li>
+	<li><a href="/docs/hooks">Hooks</a> — lifecycle, request middleware, error handling</li>
 </ul>

@@ -136,4 +136,5 @@
 	<li><a href="/docs/query">@query</a> — dynamic data fetching at request time</li>
 	<li><a href="/docs/form">@form</a> — form-based mutations with progressive enhancement</li>
 	<li><a href="/docs/command">@command</a> — imperative mutations from event handlers</li>
+	<li><a href="/docs/hooks">Hooks</a> — lifecycle, request middleware, error handling</li>
 </ul>

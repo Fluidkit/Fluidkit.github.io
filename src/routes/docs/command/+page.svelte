@@ -45,7 +45,7 @@
 
 <h2>Errors</h2>
 
-<p>Raise <code>error()</code> to return an HTTP error to the client:</p>
+<p>Call <code>error()</code> to return an HTTP error to the client:</p>
 
 <DocCode html={b.errorsPy.html} lang={b.errorsPy.lang} />
 
@@ -115,9 +115,9 @@
 <h2>Redirects</h2>
 
 <p>
-	Commands do not support redirects in FluidKit. If you raise <code>Redirect</code> inside a
-	<code>@command</code>, it will be logged as a warning and ignored on the client. Use
-	<a href="/docs/form"><code>@form</code></a> if you need redirect behavior after a mutation.
+    Commands do not support redirects in FluidKit. If you call <code>redirect()</code> inside a
+    <code>@command</code>, it will be logged as a warning and ignored on the client. Use
+    <a href="/docs/form"><code>@form</code></a> if you need redirect behavior after a mutation.
 </p>
 
 <h2>Next steps</h2>
@@ -126,4 +126,5 @@
 	<li><a href="/docs/form">@form</a> — form-based mutations with progressive enhancement and redirects</li>
 	<li><a href="/docs/query">@query</a> — the queries you'll be updating</li>
 	<li><a href="/docs/prerender">@prerender</a> — build-time data with optional runtime fallback</li>
+	<li><a href="/docs/hooks">Hooks</a> — lifecycle, request middleware, error handling</li>
 </ul>

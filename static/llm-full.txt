@@ -25,6 +25,7 @@ No system Node.js required — FluidKit bundles it via nodejs-wheel.
 Generated `.remote.ts` files update automatically on save in dev mode via HMR (Jurigged). They are real TypeScript you can inspect and version control.
 
 All four decorators support both async and sync functions. Use async def when you need await — for database calls, HTTP requests, or .refresh() and .set() on async queries. Use plain def for simple synchronous logic. Sync functions run in a threadpool automatically. If a query is sync, its .refresh() and .set() are also sync — no await needed.
+
 ---
 
 ## @query — Read data
@@ -91,7 +92,7 @@ from fluidkit import query, error
 async def get_post(slug: str):
     post = db.get(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post
 ```
 
@@ -147,7 +148,7 @@ The Svelte side gets full type safety — post.title autocompletes, post.nonexis
 
 ### Errors
 
-Raise error() to return an HTTP error:
+Call `error()` to return an HTTP error:
 
 ```python
 from fluidkit import query, error
@@ -156,7 +157,7 @@ from fluidkit import query, error
 async def get_post(slug: str):
     post = await db.find(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post
 ```
 
@@ -237,7 +238,7 @@ async def get_profile():
     event = get_request_event()
     session_id = event.cookies.get("session_id")
     if not session_id:
-        raise error(401, "Unauthorized")
+        error(401, "Unauthorized")
     return await db.get_user(session_id)
 ```
 
@@ -393,16 +394,16 @@ Add enctype="multipart/form-data" to the form when using file inputs. FileUpload
 
 ### Redirects
 
-Raise Redirect to navigate after a successful submission:
+Call `redirect()` to navigate after a successful submission:
 
 ```python
-from fluidkit import form, Redirect
+from fluidkit import form, redirect
 
 @form
 async def create_post(title: str, content: str) -> None:
     slug = title.lower().replace(" ", "-")
     await db.insert(slug, title, content)
-    raise Redirect(303, f"/blog/{slug}")
+    redirect(303, f"/blog/{slug}")
 ```
 
 The redirect is captured by the FluidKit backend and forwarded to SvelteKit, which performs the navigation on the client. Common status codes:
@@ -412,7 +413,7 @@ The redirect is captured by the FluidKit backend and forwarded to SvelteKit, whi
 
 ### Errors
 
-Raise error() to return an HTTP error:
+Call `error()` to return an HTTP error:
 
 ```python
 from fluidkit import form, error, get_request_event
@@ -422,7 +423,7 @@ async def create_post(title: str, content: str) -> None:
     event = get_request_event()
     session_id = event.cookies.get("session_id")
     if not session_id:
-        raise error(401, "Unauthorized")
+        error(401, "Unauthorized")
     await db.insert(title, content)
 ```
 
@@ -613,7 +614,7 @@ async def like_post(post_id: int) -> LikeResult:
 
 ### Errors
 
-Raise error() to return an HTTP error:
+Call `error()` to return an HTTP error:
 
 ```python
 from fluidkit import command, error, get_request_event
@@ -623,11 +624,11 @@ async def delete_post(post_id: int) -> None:
     event = get_request_event()
     session_id = event.cookies.get("session_id")
     if not session_id:
-        raise error(401, "Unauthorized")
+        error(401, "Unauthorized")
 
     post = await db.find(post_id)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
 
     await db.delete(post_id)
 ```
@@ -711,7 +712,7 @@ async def logout() -> None:
 
 ### Redirects
 
-Commands do NOT support redirects in FluidKit. If you raise Redirect inside a @command, it will be logged as a warning and ignored on the client. Use @form if you need redirect behavior after a mutation.
+Commands do NOT support redirects in FluidKit. If you call `redirect()` inside a `@command`, it will be logged as a warning and ignored on the client. Use @form if you need redirect behavior after a mutation.
 
 ---
 
@@ -758,7 +759,7 @@ from fluidkit import prerender, error
 async def get_post(slug: str) -> Post:
     post = await db.find(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post
 ```
 
@@ -786,7 +787,7 @@ Pass a list of arguments to prerender at build time:
 async def get_post(slug: str) -> Post:
     post = await db.find(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post
 ```
 
@@ -809,7 +810,7 @@ By default, prerender functions are excluded from your server bundle — calling
 async def get_post(slug: str) -> Post:
     post = await db.find(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post
 ```
 
@@ -892,13 +893,14 @@ The override is applied immediately and released when the mutation completes or 
 ## Key APIs
 
 ### error(status, message)
-Raise to return an HTTP error. Import from fluidkit.
+Call to return an HTTP error. Import from fluidkit.
 
 ```python
 from fluidkit import error
-raise error(404, "Not found")
-raise error(401, "Unauthorized")
-raise error(400, "Bad request")
+
+error(404, "Not found")
+error(401, "Unauthorized")
+error(400, "Bad request")
 ```
 
 Behavior depends on calling context:
@@ -907,14 +909,15 @@ Behavior depends on calling context:
 - @command: caught by caller's try/catch
 - @prerender: fails the build; with dynamic=True at runtime, triggers nearest <svelte:boundary>
 
-### Redirect(status, url)
-Only works in @form. Raises to navigate after submission.
+### redirect(status, url)
+Only works in @form. Call to navigate after submission.
 
 ```python
-from fluidkit import Redirect
-raise Redirect(303, "/dashboard")
-raise Redirect(307, "/temporary-location")
-raise Redirect(308, "/permanent-location")
+from fluidkit import redirect
+
+redirect(303, "/dashboard")
+redirect(307, "/temporary-location")
+redirect(308, "/permanent-location")
 ```
 
 Status codes:
@@ -922,7 +925,7 @@ Status codes:
 - 307 — Temporary Redirect (preserves method)
 - 308 — Permanent Redirect (preserves method, SEO transfers)
 
-Raising Redirect in @command is logged as a warning and ignored on the client.
+Calling `redirect()` in @command is logged as a warning and ignored on the client.
 
 ### get_request_event()
 Access cookies, locals, and request data. Available in all decorators.
@@ -940,7 +943,7 @@ locale = event.cookies.get("locale") or "en"
 event.cookies.set("session_id", value, httponly=True, path="/")
 event.cookies.set("session_id", "", httponly=True, path="/", max_age=0)  # delete
 
-# Locals dict — pass data between hooks and handlers
+# Locals — shared with @hooks.handle. Serializable values forwarded to SvelteKit.
 event.locals["user_id"] = user.id
 ```
 
@@ -993,55 +996,153 @@ Only use for objects that must survive re-execution (DB connections, HTTP client
 
 ---
 
-## Lifecycle hooks
+## Hooks
 
-### @on_startup / @on_shutdown
+Import `hooks` from `fluidkit`:
 
 ```python
-from fluidkit import on_startup, on_shutdown
+from fluidkit import hooks
+```
 
-db = None
+### Lifecycle
 
-@on_startup
-async def connect_db():
+```python
+@hooks.init
+async def setup():
     global db
     db = await Database.connect("postgresql://...")
-    print("Database connected")
+
+@hooks.cleanup
+async def teardown():
+    await db.close()
+
+@hooks.lifespan
+async def manage_redis():
+    global redis
+    redis = await aioredis.from_url("redis://localhost")
+    yield
+    await redis.close()
+```
+
+`@hooks.init` and `@hooks.cleanup` accept async or sync functions with no parameters. Only one of each is allowed per application.
+
+`@hooks.lifespan` accepts an async or sync generator that yields exactly once. Code before yield runs at startup, code after runs at shutdown. Only one is allowed per application.
+
+### Request middleware — @hooks.handle
+
+Runs on every remote function call. Receives `(event, resolve)`. Must return `await resolve(event)` or an early return value.
+
+```python
+@hooks.handle
+async def auth(event, resolve):
+    token = event.cookies.get("access_token")
+    event.locals["user"] = await verify_token(token)
+    return await resolve(event)
+
+@hooks.handle
+async def logging(event, resolve):
+    import time
+    start = time.time()
+    result = await resolve(event)
+    print(f"{event.method} {event.url} took {time.time() - start:.2f}s")
+    return result
+```
+
+Multiple `@hooks.handle` hooks are allowed. Default execution order is source order within a file, then file import order across files. Use `hooks.sequence()` for explicit order:
+
+```python
+hooks.sequence(auth, logging)
+```
+
+`hooks.sequence()` can only be called once per application — calling it from a second module raises `RuntimeError`. Calling it again from the same module replaces the previous order. Each function passed must already be decorated with `@hooks.handle`.
+
+The `event` object passed to `@hooks.handle` (`HookEvent`):
+- `event.url` — full request URL string
+- `event.method` — HTTP method string
+- `event.headers` — dict of incoming request headers
+- `event.cookies` — shared `Cookies` instance. The same instance is shared with `RequestEvent` inside the remote function, so cookie writes from a hook are visible inside the handler and collected together at response time
+- `event.locals` — shared `_LocalsDict`. Values set here are visible inside the remote function. Serializable values are forwarded to SvelteKit via `__fk_locals`
+- `event.is_remote` — `True` for remote function calls, `False` for page-level requests
+
+Sync handle hooks are supported — they run in a thread executor automatically.
+
+### Error hooks
+
+Error hooks fire for unexpected exceptions only. `error()` (HTTPError) and `redirect()` are intentional control flow and never reach these hooks.
+
+#### @hooks.handle_error
+
+Catches unexpected errors. Fires for:
+- `TypeError` — wrong argument types (status 400)
+- `ValueError` — invalid data in `@form` handlers (status 400), unhandled elsewhere (status 500)
+- Any other unhandled `Exception` (status 500)
+
+Must accept four parameters: `(error, event, status, message)`. Must return a dict with at minimum `{"message": str}`. The returned dict becomes the full JSON response body at the corresponding status code.
+
+```python
+@hooks.handle_error
+async def on_error(error, event, status, message):
+    error_id = str(uuid4())
+    logger.exception(error, extra={"error_id": error_id})
+    return {"message": "Something went wrong", "error_id": error_id}
+```
+
+#### @hooks.handle_validation_error
+
+Catches pydantic `ValidationError` raised when a remote function parameter fails schema validation (status 400). Does not fire for other error types.
+
+Must accept two parameters: `(issues, event)` where `issues` is pydantic's `e.errors()` structured list. Must return a dict with at minimum `{"message": str}`.
+
+```python
+@hooks.handle_validation_error
+async def on_validation_error(issues, event):
+    first = issues[0] if issues else {}
+    field = first.get("loc", ("input",))[-1]
+    return {"message": f"Invalid value for field: {field}"}
+```
+
+Only one `@hooks.handle_error` and one `@hooks.handle_validation_error` are allowed per application. If either hook itself raises, the default error response is used silently — the hook's exception is not propagated.
+
+### Generated src/hooks.server.ts
+
+When any hooks are registered, FluidKit automatically generates `src/hooks.server.ts` containing a SvelteKit `handle` export. The generated file POST's to `/__fk_hooks__` before every page request. The Python server runs your `@hooks.handle` chain and returns cookies and locals piggybacked on the response. Cookies are applied via `event.cookies.set()` and locals are merged into `event.locals` before the page renders — which is why cookie writes from handle hooks work correctly even for `@query` and `@prerender`.
+
+If no hooks are registered and the file was previously generated by FluidKit, it is removed automatically. Do not edit this file manually — FluidKit overwrites it. If you need additional SvelteKit server handle logic, use SvelteKit's `sequence()` helper to compose the generated handle with your own.
+
+### Deprecated lifecycle API
+
+`@on_startup`, `@on_shutdown`, and `@lifespan` imported directly from `fluidkit` are deprecated wrappers. They still work but emit `DeprecationWarning` at decoration time and delegate to the hooks API.
+
+| Deprecated import | Replacement |
+|---|---|
+| `from fluidkit import on_startup` | `@hooks.init` |
+| `from fluidkit import on_shutdown` | `@hooks.cleanup` |
+| `from fluidkit import lifespan` | `@hooks.lifespan` |
+
+Migration example:
+```python
+# Before
+from fluidkit import on_startup, on_shutdown
+
+@on_startup
+async def setup():
+    ...
 
 @on_shutdown
-async def disconnect_db():
-    await db.disconnect()
-    print("Database disconnected")
+async def teardown():
+    ...
+
+# After
+from fluidkit import hooks
+
+@hooks.init
+async def setup():
+    ...
+
+@hooks.cleanup
+async def teardown():
+    ...
 ```
-
-### @lifespan
-
-For paired setup/teardown:
-
-```python
-from fluidkit import lifespan
-
-redis_client = None
-
-@lifespan
-async def manage_redis():
-    global redis_client
-    redis_client = await aioredis.from_url("redis://localhost")
-    yield
-    await redis_client.close()
-```
-
-@lifespan can optionally accept the FastAPI app:
-
-```python
-@lifespan
-async def manage_resources(app):
-    app.state.cache = {}
-    yield
-    app.state.cache.clear()
-```
-
----
 
 ## Type mapping
 
@@ -1055,8 +1156,8 @@ Python type annotations and Pydantic models are reflected into TypeScript automa
 | bool                  | boolean                       |
 | list[X]               | X[]                           |
 | dict                  | Record<string, unknown>       |
-| Optional[X]           | X | null                      |
-| X | None              | X | null                      |
+| Optional[X]           | X \| null                     |
+| X \| None             | X \| null                     |
 | Pydantic BaseModel    | interface                     |
 | Enum(str, Enum)       | enum                          |
 | list[str]             | string[]                      |
@@ -1093,7 +1194,7 @@ async def get_catalog(page: int = 1, category: Category | None = None) -> Catalo
 FluidKit generates:
 
 ```typescript
-// in $fluidkit/schema.ts (auto-generated)
+// $fluidkit/schema.ts (auto-generated)
 export enum Category {
   ELECTRONICS = "electronics",
   BOOKS = "books",
@@ -1233,12 +1334,16 @@ The schema_output directory contains FluidKit's generated TypeScript files. A $f
 
 ## Error behavior summary
 
-| Decorator   | Error behavior                                          |
+| Decorator   | Error behavior                                           |
 |-------------|----------------------------------------------------------|
 | @query      | Triggers nearest <svelte:boundary>                       |
 | @form       | Renders nearest +error.svelte                            |
 | @command    | Caught by caller's try/catch                             |
 | @prerender  | Fails build; with dynamic=True at runtime, same as @query |
+
+`@hooks.handle_error` intercepts unexpected errors (TypeError, ValueError, unhandled Exception) before the default response is sent. It does not intercept `error()` (HTTPError) or `redirect()`.
+
+`@hooks.handle_validation_error` intercepts pydantic `ValidationError` when a parameter fails schema validation.
 
 ---
 
@@ -1266,7 +1371,7 @@ The schema_output directory contains FluidKit's generated TypeScript files. A $f
 ```python
 # src/lib/blog.py
 from pydantic import BaseModel
-from fluidkit import query, command, form, Redirect
+from fluidkit import query, command, form, redirect
 
 class Post(BaseModel):
     id: int
@@ -1291,7 +1396,7 @@ async def create_post(title: str, content: str) -> None:
     post = Post(id=len(posts) + 1, title=title, content=content)
     posts.append(post)
     await get_posts().refresh()
-    raise Redirect(303, "/blog")
+    redirect(303, "/blog")
 
 @command
 async def like_post(post_id: int) -> bool:
@@ -1327,8 +1432,8 @@ async def delete_post(post_id: int) -> None:
   <article>
     <h2>{post.title}</h2>
     <p>{post.content}</p>
-    <button onclick={() => like_post(post.id)}>👍 {post.likes}</button>
-    <button onclick={() => delete_post(post.id)}>🗑️ Delete</button>
+    <button onclick={async () => await like_post(post.id)}>👍 {post.likes}</button>
+    <button onclick={async () => await delete_post(post.id)}>🗑️ Delete</button>
   </article>
 {/each}
 ```
@@ -1337,18 +1442,18 @@ async def delete_post(post_id: int) -> None:
 
 ```python
 # src/lib/auth.py
-from fluidkit import query, form, command, error, Redirect, get_request_event
+from fluidkit import query, form, command, error, redirect, get_request_event
 
 USERS = {"admin": "secret123"}
 
 @form
 async def login(username: str, _password: str) -> None:
     if USERS.get(username) != _password:
-        raise error(401, "Invalid credentials")
+        error(401, "Invalid credentials")
 
     event = get_request_event()
     event.cookies.set("session", username, httponly=True, path="/")
-    raise Redirect(303, "/dashboard")
+    redirect(303, "/dashboard")
 
 @command
 async def logout() -> None:
@@ -1391,8 +1496,8 @@ class CityWeather(BaseModel):
 
 weather_db: dict[str, CityWeather] = {
     "nyc": CityWeather(city_id="nyc", name="New York", temp=72.0),
-    "la": CityWeather(city_id="la", name="Los Angeles", temp=85.0),
-    "sf": CityWeather(city_id="sf", name="San Francisco", temp=60.0),
+    "la":  CityWeather(city_id="la",  name="Los Angeles", temp=85.0),
+    "sf":  CityWeather(city_id="sf",  name="San Francisco", temp=60.0),
 }
 
 @query.batch
@@ -1419,7 +1524,7 @@ async def set_temp(city_id: str, temp: float) -> None:
     {#await get_weather(id) then weather}
       <h3>{weather.name}</h3>
       <p>{weather.temp}°F</p>
-      <button onclick={() => set_temp(id, weather.temp + 1)}>+1°</button>
+      <button onclick={async () => await set_temp(id, weather.temp + 1)}>+1°</button>
     {/await}
   </div>
 {/each}
@@ -1466,25 +1571,22 @@ async def upload_file(label: str, attachment: FileUpload) -> dict:
 
 ```python
 # src/app.py
-from fluidkit import on_startup, on_shutdown, lifespan
+from fluidkit import hooks
+import aioredis
 
 db = None
+redis_client = None
 
-@on_startup
+@hooks.init
 async def connect_db():
     global db
     db = await Database.connect("postgresql://...")
-    print("Database connected")
 
-@on_shutdown
+@hooks.cleanup
 async def disconnect_db():
     await db.disconnect()
-    print("Database disconnected")
 
-# Alternative: paired setup/teardown
-redis_client = None
-
-@lifespan
+@hooks.lifespan
 async def manage_redis():
     global redis_client
     redis_client = await aioredis.from_url("redis://localhost")

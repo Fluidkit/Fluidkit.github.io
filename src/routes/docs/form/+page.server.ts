@@ -133,13 +133,13 @@ async def create_profile(
 			},
 			redirectPy: {
 				lang: 'python',
-				code: `from fluidkit import form, Redirect
+				code: `from fluidkit import form, redirect
 
 @form
 async def create_post(title: str, content: str) -> None:
     slug = title.lower().replace(" ", "-")
     await db.insert(slug, title, content)
-    raise Redirect(303, f"/blog/{slug}")`
+    redirect(303, f"/blog/{slug}")`
 			},
 			errorsPy: {
 				lang: 'python',
@@ -150,7 +150,7 @@ async def create_post(title: str, content: str) -> None:
     event = get_request_event()
     session_id = event.cookies.get("session_id")
     if not session_id:
-        raise error(401, "Unauthorized")
+        error(401, "Unauthorized")
     await db.insert(title, content)`
 			},
 			validationSvelte: {

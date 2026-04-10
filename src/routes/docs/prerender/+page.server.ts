@@ -37,7 +37,7 @@ async def get_posts() -> list[Post]:
 async def get_post(slug: str) -> Post:
     post = await db.find(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post`
 			},
 			argsSvelte: {
@@ -60,7 +60,7 @@ async def get_post(slug: str) -> Post:
 async def get_post(slug: str) -> Post:
     post = await db.find(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post`
 			},
 			inputsCallable: {
@@ -84,7 +84,7 @@ async def get_post(slug: str) -> Post:
 async def get_post(slug: str) -> Post:
     post = await db.find(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post`
 			},
 			noArgPy: {

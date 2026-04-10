@@ -57,7 +57,7 @@ async def get_posts():
 async def get_post(slug: str):
     post = db.get(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post`
 			},
 			argsSvelte: {
@@ -107,7 +107,7 @@ async def get_posts() -> list[Post]:
 async def get_post(slug: str):
     post = await db.find(slug)
     if not post:
-        raise error(404, "Not found")
+        error(404, "Not found")
     return post`
 			},
 			refresh: {
@@ -163,7 +163,7 @@ async def get_profile():
     event = get_request_event()
     session_id = event.cookies.get("session_id")
     if not session_id:
-        raise error(401, "Unauthorized")
+        error(401, "Unauthorized")
     return await db.get_user(session_id)`
 			}
 		})

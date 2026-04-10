@@ -70,7 +70,7 @@
 
 <h2>Errors</h2>
 
-<p>Raise <code>error()</code> to return an HTTP error to the client:</p>
+<p>Call <code>error()</code> to return an HTTP error to the client:</p>
 
 <DocCode html={b.errors.html} lang={b.errors.lang} />
 
@@ -165,4 +165,5 @@
 	<li><a href="/docs/form">@form</a> — form handling with file uploads, progressive enhancement, and cache invalidation</li>
 	<li><a href="/docs/command">@command</a> — write data from anywhere, not tied to a form</li>
 	<li><a href="/docs/prerender">@prerender</a> — build-time data with optional runtime fallback</li>
+	<li><a href="/docs/hooks">Hooks</a> — lifecycle, request middleware, error handling</li>
 </ul>

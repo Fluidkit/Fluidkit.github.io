@@ -35,6 +35,7 @@
 		{
 			label: 'Reference',
 			items: [
+				{ title: 'Hooks', href: `${base}/docs/hooks` },
 				{ title: 'CLI', href: `${base}/docs/cli` },
 				{ title: 'Configuration', href: `${base}/docs/config` },
 				{ title: 'llm.txt', href: '/llm.txt' },

@@ -89,6 +89,7 @@
 	<li><a href="/docs/command">@command</a> — writing data, updating queries, optimistic updates</li>
 	<li><a href="/docs/form">@form</a> — fields, validation, file uploads, progressive enhancement</li>
 	<li><a href="/docs/prerender">@prerender</a> — build-time data with optional runtime fallback</li>
+	<li><a href="/docs/hooks">Hooks</a> — lifecycle, request middleware, error handling</li>
 	<li><a href="/docs/cli">CLI</a> — all available commands</li>
 	<li><a href="/docs/config">Configuration</a> — fluidkit.config.json reference</li>
 </ul>
